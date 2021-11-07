@@ -4,7 +4,7 @@ const minimist = require('minimist');
 
 // connection.ts (client-side)
 import { Client } from "colyseus.js";
-const client = new Client("ws://localhost:2567");
+const client = new Client("ws://localhost:3000");
 
 async function connect() {
   try {

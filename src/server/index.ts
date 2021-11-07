@@ -1,16 +1,20 @@
-// index.ts (server-side, entrypoint)
-import http from "http";
 import { Server } from "colyseus";
+import { createServer } from "http";
+import express from "express";
+
 import { ConstellationCardsRoom } from "../constellation-cards/room";
 
-// create your game server
+const port = Number(process.env.port) || 3000;
+
+const app = express();
+app.use(express.json());
+app.use(express.static("public"));
+
 const gameServer = new Server({
-    server: http.createServer()
+  server: createServer(app),
 });
 
-// register your room handlers
-gameServer.define('constellation-cards', ConstellationCardsRoom);
+gameServer.define("constellation-cards", ConstellationCardsRoom);
 
-// make it available to receive connections
-gameServer.listen(2567);
-console.log(`Listening on ws://localhost:2567`)
+gameServer.listen(port);
+console.log(`Listening on ws://localhost:${port}`);
