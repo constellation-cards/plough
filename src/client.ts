@@ -1,6 +1,6 @@
-const readline = require("readline");
-readline.emitKeypressEvents(process.stdin);
-process.stdin.setRawMode(true);
+import * as readline from 'readline';
+import parseArgvString from 'string-to-argv';
+const minimist = require('minimist');
 
 // connection.ts (client-side)
 import { Client } from "colyseus.js";
@@ -18,29 +18,24 @@ async function connect() {
       console.log("You've been disconnected.");
     });
 
-    process.stdin.on("keypress", (str, key) => {
-      if (key.ctrl && key.name === "c") {
-        process.exit();
-      } else {
-        switch (key.name) {
-          case "w":
-              room.send("move", {x: 0, y: 1});
-            break;
-          case "a":
-            room.send("move", {x: -1, y: 0});
-            break;
-          case "s":
-            room.send("move", {x: 0, y: -1});
-            break;
-          case "d":
-            room.send("move", {x: 1, y: 0});
-            break;
-        }
-      }
-    });
+    return room;
   } catch (e) {
     console.error("Couldn't connect:", e);
   }
 }
 
-connect().catch(console.error);
+async function play() {
+  const room = await connect();
+
+  const rl = readline.createInterface({input: process.stdin, output: process.stdout});
+
+  rl.prompt();
+  for await (const line of rl) {
+    const parsed = minimist(parseArgvString(line));
+    // The first word is considered a command, and the rest of the object is treated as data
+    room.send(parsed._[0], parsed);
+    rl.prompt();
+  }
+}
+
+play().catch(console.error);
