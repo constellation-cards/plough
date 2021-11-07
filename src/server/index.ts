@@ -1,7 +1,7 @@
 // index.ts (server-side, entrypoint)
 import http from "http";
-import { Server, Room } from "colyseus";
-import { MyRoom } from "./rooms/MyRoom";
+import { Server } from "colyseus";
+import { ConstellationCardsRoom } from "../constellation-cards/room";
 
 // create your game server
 const gameServer = new Server({
@@ -9,7 +9,7 @@ const gameServer = new Server({
 });
 
 // register your room handlers
-gameServer.define('my_room', MyRoom);
+gameServer.define('constellation-cards', ConstellationCardsRoom);
 
 // make it available to receive connections
 gameServer.listen(2567);
