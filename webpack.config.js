@@ -1,6 +1,6 @@
 const path = require("path");
 module.exports = {
-  entry: "./src/constellation-cards/client/index.tsx",
+  entry: "./src/client/index.tsx",
   module: {
     rules: [
       {

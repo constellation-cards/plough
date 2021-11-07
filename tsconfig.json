@@ -5,6 +5,7 @@
     "module": "commonjs",
     "strict": true,
     "allowJs": true,
+    "jsx": "react",
     "strictNullChecks": false,
     "esModuleInterop": true,
     "experimentalDecorators": true,
