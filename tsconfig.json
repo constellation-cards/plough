@@ -10,9 +10,12 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": [
+      "./types"
+    ]
   },
   "include": [
     "src"
-  ]
+  ],
 }
