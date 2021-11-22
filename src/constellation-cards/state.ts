@@ -5,25 +5,28 @@ import { Schema, ArraySchema, MapSchema, type } from "@colyseus/schema"
  * Cards naturally live in stacks.
  * Cards can be dealt onto spreads.
  */
+
+export type Uid = string;
+
 export class Card extends Schema {
+    @type("string") uid: string = ""
     @type("string") name: string = ""
     @type("string") description: string = ""
     @type("boolean") flipped: boolean = false
-    // TODO: how do we reference the stack we came from?
+    @type("string") home: Uid = ""
+    @type("string") location: Uid = ""
 }
 
-export class Stack extends Schema {
+export class CardCollection extends Schema {
+    @type("string") uid: string = ""
     @type("string") name: string = ""
-    @type([Card]) cards = new ArraySchema<Card>()
-}
+    @type("boolean") expanded: boolean = false
 
-export class Spread extends Schema {
-    @type("string") name: string = ""
     @type([Card]) cards = new ArraySchema<Card>()
 }
 
 // Our custom game state, an ArraySchema of type Player only at the moment
 export class ConstellationCardsState extends Schema {
-    @type([Stack]) stacks = new ArraySchema<Stack>()
-    @type([Spread]) spreads = new ArraySchema<Spread>()
+    @type({map: Card}) cards = new MapSchema<Card>()
+    @type({map: CardCollection}) collections = new MapSchema<CardCollection>()
 }
