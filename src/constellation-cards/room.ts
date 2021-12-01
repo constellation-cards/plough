@@ -1,15 +1,22 @@
 // rooms/MyRoom.ts (server-side, room file)
 import { randomBytes } from "crypto"
 import { Room } from "colyseus"
-import { ConstellationCardsState, CardCollection, Card, Uid } from "./state"
+import { ConstellationCardsState, CardCollection, CardFace, Card, Uid } from "./state"
 
 function generateUid() {
     return randomBytes(16).toString("hex")
 }
 
-interface CreateCardAction {
+interface CardDesc {
     name: string;
     description: string;
+}
+
+interface UpsertCardAction {
+    uid?: Uid;
+    front: CardDesc;
+    back: CardDesc;
+    flipped: boolean;
     home: Uid;
 }
 
@@ -56,23 +63,38 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
 
         // BEGIN state management actions
 
-        this.onMessage("create-card", (client, data: CreateCardAction) => {
-            const card = new Card()
-            card.uid = generateUid()
-            card.name = data.name
-            card.description = data.description
-            card.flipped = false
+        this.onMessage("upsert-card", (client, data: UpsertCardAction) => {
+            let card: Card;
 
-            card.home = data.home
-            card.location = data.home
-
-            this.state.cards.set(card.uid, card)
-
-            const collection = this.state.collections.get(card.home)
-            if (collection) {
-                collection.cards.push(card)
+            if (data.uid) {
+                card = this.state.cards.get(data.uid)
             } else {
-                console.error(`Wanted to add card with invalid home UID: ${card.home}`)
+                card = new Card()
+                card.uid = generateUid()
+            }
+            card.front = new CardFace()
+            card.front.name = data.front.name
+            card.front.description = data.front.description
+            card.back.name = data.back.name
+            card.back.description = data.back.description
+            card.flipped = data.flipped
+
+            card.name = (card.front.name == card.back.name) ? card.front.name : `${card.front.name} / ${card.back.name}`
+
+            // If this is a brand new card,
+            // give it a home and add it
+            if (!data.uid) {
+                this.state.cards.set(card.uid, card)
+
+                card.home = data.home
+                card.location = data.home
+    
+                const collection = this.state.collections.get(card.home)
+                if (collection) {
+                    collection.cards.push(card)
+                } else {
+                    console.error(`Wanted to add card with invalid home UID: ${card.home}`)
+                }    
             }
         })
 

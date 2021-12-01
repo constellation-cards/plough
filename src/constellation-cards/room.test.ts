@@ -38,8 +38,15 @@ describe("room", () => {
         }
 
         const standardCard: any = {
-            name: "New Card",
-            description: "Description",
+            front: {
+                name: "Front",
+                description: "Description"
+            },
+            back: {
+                name: "Back",
+                description: "Description"
+            },
+            flipped: false,
         }
 
         beforeEach(async () => {
@@ -48,8 +55,8 @@ describe("room", () => {
             await room.onCreate(options)
         })
 
-        describe("create-card", () => {
-            it("creates a card", async () => {
+        describe("upsert-card", () => {
+            xit("creates a new card", async () => {
                 // Create a stack to hold the new card
                 client.send("create-collection", standardCollection)
                 await client.waitForNextPatch()
@@ -60,7 +67,7 @@ describe("room", () => {
                     home = collection.uid
                 })
 
-                client.send("create-card", {
+                client.send("upsert-card", {
                     ...standardCard,
                     home
                 })
@@ -72,8 +79,11 @@ describe("room", () => {
                 client.state.cards.forEach((myCard: Card) => {
                     card = myCard
                 })
-                expect(card.name).toEqual("New Card")
-                expect(card.description).toEqual("Description")
+                expect(card.name).toEqual("Front / Back")
+                expect(card.front.name).toEqual("Front")
+                expect(card.back.name).toEqual("Back")
+                expect(card.front.description).toEqual("Description")
+                expect(card.back.description).toEqual("Description")
                 expect(card.flipped).toBeFalsy()
                 expect(card.home).toEqual(home)
                 expect(card.location).toEqual(home)
@@ -83,7 +93,7 @@ describe("room", () => {
                     expect(collection.cards.length).toEqual(1)
                     expect(collection.cards[0].uid).toEqual(card.uid)
                 })
-            })
+            }, 10000)
         })
 
         describe("create-collection", () => {
@@ -136,7 +146,7 @@ describe("room", () => {
                     }
                 })
 
-                client.send("create-card", {
+                client.send("upsert-card", {
                     ...standardCard,
                     home: a
                 })

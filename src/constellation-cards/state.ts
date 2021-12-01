@@ -8,13 +8,20 @@ import { Schema, ArraySchema, MapSchema, type } from "@colyseus/schema"
 
 export type Uid = string;
 
-export class Card extends Schema {
-    @type("string") uid: string = ""
+export class CardFace extends Schema {
     @type("string") name: string = ""
     @type("string") description: string = ""
+}
+
+export class Card extends Schema {
+    @type("string") uid: string = ""
+    // The card name is either "Front Name / Back Name" or "Front Name" if both are the same
+    @type("string") name: string = ""
     @type("boolean") flipped: boolean = false
     @type("string") home: Uid = ""
     @type("string") location: Uid = ""
+    @type(CardFace) front: CardFace
+    @type(CardFace) back: CardFace
 }
 
 export class CardCollection extends Schema {
