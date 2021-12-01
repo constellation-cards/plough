@@ -9,6 +9,7 @@ import Stack from "@mui/material/Stack"
 import { CardCollection } from "./state/CardCollection"
 import { ConstellationCardsState } from "./state/ConstellationCardsState"
 import CollapsedCollection from "./CollapsedCollection"
+import ExpandedCollection from "./ExpandedCollection"
 
 interface ConstellationCardsGameProps {
     room: Room
@@ -37,17 +38,19 @@ export default (props: ConstellationCardsGameProps) => {
 
     const [expanded, collapsed] = gameCollectionList(gameState?.collections)
 
+    const send = (type: string, message: any) => props.room.send(type, message)
+
     return (
         <Grid container spacing={2}>
             <Grid item xs={4}>
                 <Stack spacing={2}>
-                    {map((collection: CardCollection) => <CollapsedCollection key={collection.uid} collection={collection} />, collapsed)}
+                    {map((collection: CardCollection) => <CollapsedCollection key={collection.uid} send={send} collection={collection} />, collapsed)}
                 </Stack>
             </Grid>
             <Grid item xs={8}>
-                <pre>
-                    {JSON.stringify(collapsed, null, 2)}
-                </pre>
+            <Stack spacing={2}>
+                    {map((collection: CardCollection) => <ExpandedCollection key={collection.uid} send={send} collection={collection} />, expanded)}
+                </Stack>
             </Grid>
         </Grid>
     )

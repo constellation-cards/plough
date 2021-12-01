@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import { map } from "ramda"
 
 import { Card as CardState } from "./state/Card"
 import {
@@ -9,6 +8,7 @@ import {
     CardContent,
     IconButton,
     ListItem,
+    ListItemIcon,
     ListItemSecondaryAction,
     ListItemText,
     Tooltip,
@@ -17,26 +17,31 @@ import {
 import NavigateNextIcon from "@mui/icons-material/NavigateNext"
 
 interface CollapsedCardProps {
-    card: CardState
-    children?: React.ReactNode
+    card: CardState;
+    send: (type: string, message: any) => void;
+    children?: React.ReactNode;
 }
 
 export default ({
-    card: { name, flipped, front, back },
+    card: { uid, name, flipped, front, back }, send
 }: CollapsedCardProps) => {
+    const onClickMoveCard = (event: any) => {
+        send("move-card", {
+            cardUid: uid,
+            dest: "default"
+        })
+    }
+
     return (
-        <ListItem button>
-        <ListItemText primary={name} />
-        <ListItemSecondaryAction>
-          <Tooltip title="Deal this specific card">
-            <IconButton
-              edge="end"
-              aria-label="deal"
-            >
-              <NavigateNextIcon />
-            </IconButton>
-          </Tooltip>
-        </ListItemSecondaryAction>
-      </ListItem>
+        <ListItem button>   
+            <ListItemText primary={name} />
+            <ListItemSecondaryAction>
+                <Tooltip title="Deal this specific card">
+                    <IconButton edge="end" aria-label="deal" onClick={onClickMoveCard}>
+                        <NavigateNextIcon />
+                    </IconButton>
+                </Tooltip>
+            </ListItemSecondaryAction>
+        </ListItem>
     )
 }

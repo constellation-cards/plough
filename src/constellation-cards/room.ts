@@ -73,6 +73,12 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
             this.state.collections.set(uid, collection)
         }, defaultState.collections)
 
+        const defaultCollection = new CardCollection();
+        defaultCollection.uid = "default";
+        defaultCollection.name = "Default";
+        defaultCollection.expanded = true;
+        this.state.collections.set("default", defaultCollection);
+
         map(cardData => {
             const card = new Card();
             card.uid = cardData.uid;
