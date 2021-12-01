@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react"
 import { Room } from "colyseus.js"
-import { CardCollection } from "./state/CardCollection"
-import { ConstellationCardsState } from "./state/ConstellationCardsState"
-import { Box, Flex } from "rebass"
 import { ascend, map, partition, prop, sortWith } from "ramda"
 import { MapSchema } from "@colyseus/schema"
+
+import Grid from "@mui/material/Grid"
+import Stack from "@mui/material/Stack"
+
+import { CardCollection } from "./state/CardCollection"
+import { ConstellationCardsState } from "./state/ConstellationCardsState"
 import CollapsedCollection from "./CollapsedCollection"
 
 interface ConstellationCardsGameProps {
@@ -35,15 +38,17 @@ export default (props: ConstellationCardsGameProps) => {
     const [expanded, collapsed] = gameCollectionList(gameState?.collections)
 
     return (
-        <Flex>
-            <Box width={1/3}>
-                {map((collection: CardCollection) => <CollapsedCollection key={collection.uid} collection={collection} />, collapsed)}
-            </Box>
-            <Box width={2/3}>
+        <Grid container spacing={2}>
+            <Grid item xs={4}>
+                <Stack spacing={2}>
+                    {map((collection: CardCollection) => <CollapsedCollection key={collection.uid} collection={collection} />, collapsed)}
+                </Stack>
+            </Grid>
+            <Grid item xs={8}>
                 <pre>
                     {JSON.stringify(collapsed, null, 2)}
                 </pre>
-            </Box>
-        </Flex>
+            </Grid>
+        </Grid>
     )
 }

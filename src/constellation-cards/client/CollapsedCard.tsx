@@ -1,23 +1,42 @@
 import React, { useState } from "react"
 import { map } from "ramda"
 
-import { Card } from "./state/Card"
-import { Box, Button, Flex, Text } from "rebass"
+import { Card as CardState } from "./state/Card"
+import {
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    IconButton,
+    ListItem,
+    ListItemSecondaryAction,
+    ListItemText,
+    Tooltip,
+    Typography,
+} from "@mui/material"
+import NavigateNextIcon from "@mui/icons-material/NavigateNext"
 
 interface CollapsedCardProps {
-    card: Card
+    card: CardState
     children?: React.ReactNode
 }
 
-export default ({card}: CollapsedCardProps) => {
+export default ({
+    card: { name, flipped, front, back },
+}: CollapsedCardProps) => {
     return (
-        <Flex
-            px={2}
-            alignItems="center"
-        >
-            <Text p={2} fontWeight='bold'>{card.name}</Text>
-            <Box mx='auto' />
-            <Button variant='picker' href='#!'>Pick</Button>
-        </Flex>
+        <ListItem button>
+        <ListItemText primary={name} />
+        <ListItemSecondaryAction>
+          <Tooltip title="Deal this specific card">
+            <IconButton
+              edge="end"
+              aria-label="deal"
+            >
+              <NavigateNextIcon />
+            </IconButton>
+          </Tooltip>
+        </ListItemSecondaryAction>
+      </ListItem>
     )
 }

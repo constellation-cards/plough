@@ -10,7 +10,7 @@
     "start": "ts-node-dev --respawn --transpile-only src/server/index.ts",
     "start:client": "ts-node-dev src/client.ts",
     "loadtest": "colyseus-loadtest loadtest/example.ts --room my_room --numClients 2",
-    "clean": "node node_modules/rimraf/bin dist",
+    "clean": "node node_modules/rimraf/bin dist public",
     "test": "jest"
   },
   "repository": {
@@ -38,26 +38,34 @@
     "@types/react-dom": "^17.0.11",
     "@types/rebass": "^4.0.10",
     "@types/serve-index": "^1.9.1",
+    "copy-webpack-plugin": "^10.0.0",
     "copyfiles": "^2.4.1",
+    "css-loader": "^6.5.1",
     "dotenv": "^10.0.0",
     "dotenv-webpack": "^7.0.3",
+    "file-loader": "^6.2.0",
     "jest": "^27.3.1",
     "mocha": "^9.1.3",
     "prettier": "^2.4.1",
     "rimraf": "^3.0.2",
     "serve-index": "^1.9.1",
+    "style-loader": "^3.3.1",
     "ts-jest": "^27.0.7",
     "ts-loader": "^9.2.6",
     "ts-node": "^10.4.0",
     "ts-node-dev": "^1.1.8",
     "typescript": "^4.4.4",
+    "url-loader": "^4.1.1",
     "webpack": "^5.62.1",
     "webpack-cli": "^4.9.1"
   },
   "dependencies": {
     "@colyseus/monitor": "^0.14.22",
-    "@emotion/react": "^11.5.0",
-    "@rebass/preset": "^4.0.5",
+    "@emotion/react": "^11.7.0",
+    "@emotion/styled": "^11.6.0",
+    "@fontsource/roboto": "^4.5.1",
+    "@mui/icons-material": "^5.2.0",
+    "@mui/material": "^5.2.2",
     "colyseus": "^0.14.23",
     "colyseus.js": "^0.14.13",
     "cors": "^2.8.5",
@@ -67,7 +75,6 @@
     "ramda": "^0.27.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "rebass": "^4.0.7",
     "string-to-argv": "^1.0.0"
   }
 }
