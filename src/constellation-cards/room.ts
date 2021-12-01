@@ -2,6 +2,9 @@
 import { randomBytes } from "crypto"
 import { Room } from "colyseus"
 import { ConstellationCardsState, CardCollection, CardFace, Card, Uid } from "./state"
+import { map, mapObjIndexed } from "ramda"
+
+import {defaultState} from "./default-state"
 
 function generateUid() {
     return randomBytes(16).toString("hex")
@@ -60,6 +63,32 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
     // room has been created: bring your own logic
     async onCreate(options: any) {
         this.setState(new ConstellationCardsState())
+
+        // Add data from default state
+        mapObjIndexed((collectionData: Record<string, any>, uid, _idx) => {
+            const collection = new CardCollection();
+            collection.uid = uid;
+            collection.name = collectionData.name;
+            collection.expanded = collectionData.expanded;
+            this.state.collections.set(uid, collection)
+        }, defaultState.collections)
+
+        map(cardData => {
+            const card = new Card();
+            card.uid = cardData.uid;
+            card.name = cardData.name;
+            card.flipped = cardData.flipped;
+            card.home = cardData.home;
+            card.front = new CardFace()
+            card.front.name = cardData.front.name;
+            card.front.name = cardData.front.description;
+            card.back = new CardFace()
+            card.back.name = cardData.back.name;
+            card.back.name = cardData.back.description;
+            this.state.cards.set(card.uid, card)
+            const collection = this.state.collections.get(card.home)
+            collection.cards.push(card)
+        }, defaultState.cards)
 
         // BEGIN state management actions
 
