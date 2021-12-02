@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from "react"
-import { Room } from "colyseus.js"
-import { ascend, map, partition, prop, sortWith } from "ramda"
 import { MapSchema } from "@colyseus/schema"
-
 import Grid from "@mui/material/Grid"
 import Stack from "@mui/material/Stack"
+import { Room } from "colyseus.js"
+import { ascend, map, partition, prop, sortWith } from "ramda"
+import React, { useEffect, useState } from "react"
 
-import { CardCollection } from "./state/CardCollection"
-import { ConstellationCardsState } from "./state/ConstellationCardsState"
 import CollapsedCollection from "./CollapsedCollection"
 import ExpandedCollection from "./ExpandedCollection"
+import { CardCollection } from "./state/CardCollection"
+import { ConstellationCardsState } from "./state/ConstellationCardsState"
 
 interface ConstellationCardsGameProps {
     room: Room
@@ -18,10 +17,12 @@ interface ConstellationCardsGameProps {
 
 export interface RoomActions {
     moveCardAction: (cardUid: string, dest: string) => void;
+    discardCardAction: (cardUid: string, homeUid: string) => void;
 }
 
 const createActions = (room: Room): RoomActions => ({
-    moveCardAction: (cardUid: string, dest: string) => room.send("move-card", {cardUid, dest})
+    moveCardAction: (cardUid: string, dest: string) => room.send("move-card", {cardUid, dest}),
+    discardCardAction: (cardUid: string, homeUid: string) => room.send("move-card", {cardUid, dest: homeUid}),
 })
 
 const sortWithRules = [
@@ -34,19 +35,19 @@ const gameCollectionList = (collections: MapSchema<CardCollection>) => {
     return partition((collection: CardCollection) => collection.expanded, collectionArray)
 }
 
-export default (props: ConstellationCardsGameProps) => {
+export default ({room}: ConstellationCardsGameProps) => {
     const [gameState, setGameState] = useState<ConstellationCardsState>(null)
 
     useEffect(() => {
         console.log("Registering onStateChange event with room")
-        props.room.onStateChange((newState) => {
+        room.onStateChange((newState) => {
             setGameState(Object.assign({}, newState))
         })
-    }, [props.room])
+    }, [room])
 
     const [expanded, collapsed] = gameCollectionList(gameState?.collections)
 
-    const actions = createActions(props.room)
+    const actions = createActions(room)
 
     return (
         <Grid container spacing={2}>

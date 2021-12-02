@@ -1,21 +1,9 @@
-import React, { useState } from "react"
-import {
-    Button,
-    Card,
-    CardActions,
-    CardContent,
-    IconButton,
-    ListItem,
-    ListItemIcon,
-    ListItemSecondaryAction,
-    ListItemText,
-    Tooltip,
-    Typography,
-} from "@mui/material"
 import NavigateNextIcon from "@mui/icons-material/NavigateNext"
+import { IconButton, ListItem, ListItemSecondaryAction, ListItemText, Tooltip } from "@mui/material"
+import React from "react"
 
-import { Card as CardState } from "./state/Card"
 import { RoomActions } from "./ConstellationCardsGame"
+import { Card as CardState } from "./state/Card"
 
 interface CollapsedCardProps {
     card: CardState;
@@ -24,11 +12,9 @@ interface CollapsedCardProps {
 }
 
 export default ({
-    card: { uid, name, flipped, front, back }, actions
+    card: { uid, name }, actions
 }: CollapsedCardProps) => {
-    const onClickMoveCard = (event: any) => {
-        actions.moveCardAction(uid, "default")
-    }
+    const onClickMoveCard = (event: any) => actions.moveCardAction(uid, "default")
 
     return (
         <ListItem button>   

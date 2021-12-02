@@ -1,10 +1,10 @@
+import { Room } from "colyseus"
 // rooms/MyRoom.ts (server-side, room file)
 import { randomBytes } from "crypto"
-import { Room } from "colyseus"
-import { ConstellationCardsState, CardCollection, CardFace, Card, Uid } from "./state"
 import { map, mapObjIndexed } from "ramda"
 
-import {defaultState} from "./default-state"
+import { defaultState } from "./default-state"
+import { Card, CardCollection, CardFace, ConstellationCardsState, Uid } from "./state"
 
 function generateUid() {
     return randomBytes(16).toString("hex")
@@ -85,12 +85,13 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
             card.name = cardData.name;
             card.flipped = cardData.flipped;
             card.home = cardData.home;
+            card.location = cardData.home;
             card.front = new CardFace()
             card.front.name = cardData.front.name;
-            card.front.name = cardData.front.description;
+            card.front.description = cardData.front.description;
             card.back = new CardFace()
             card.back.name = cardData.back.name;
-            card.back.name = cardData.back.description;
+            card.back.description = cardData.back.description;
             this.state.cards.set(card.uid, card)
             const collection = this.state.collections.get(card.home)
             collection.cards.push(card)

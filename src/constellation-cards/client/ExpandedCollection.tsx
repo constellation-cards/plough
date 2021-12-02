@@ -1,12 +1,12 @@
-import React from "react"
-import { map } from "ramda"
-import { List, Typography } from "@mui/material"
 import AutoAwesomeMotionIcon from "@mui/icons-material/AutoAwesomeMotion"
+import { List, Typography } from "@mui/material"
+import { map } from "ramda"
+import React from "react"
 
-import { CardCollection } from "./state/CardCollection"
-import { Card } from "./state/Card"
-import CollapsedCard from "./CollapsedCard"
 import { RoomActions } from "./ConstellationCardsGame"
+import ExpandedCard from "./ExpandedCard"
+import { Card } from "./state/Card"
+import { CardCollection } from "./state/CardCollection"
 
 interface CollapsedCollectionProps {
     collection: CardCollection;
@@ -24,7 +24,7 @@ export default ({ collection: { name, cards }, actions }: CollapsedCollectionPro
             <List component="div" disablePadding>
                 {map(
                     (card: Card) => (
-                        <CollapsedCard key={card.uid} actions={actions} card={card} />
+                        <ExpandedCard key={card.uid} actions={actions} card={card} />
                     ),
                     cards
                 )}
