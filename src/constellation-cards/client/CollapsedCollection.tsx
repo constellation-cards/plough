@@ -1,19 +1,20 @@
 import React from "react"
 import { map } from "ramda"
+import { List, Typography } from "@mui/material"
+import AutoAwesomeMotionIcon from "@mui/icons-material/AutoAwesomeMotion"
 
 import { CardCollection } from "./state/CardCollection"
 import { Card } from "./state/Card"
 import CollapsedCard from "./CollapsedCard"
-import { List, Typography } from "@mui/material"
-import AutoAwesomeMotionIcon from "@mui/icons-material/AutoAwesomeMotion"
+import { RoomActions } from "./ConstellationCardsGame"
 
 interface CollapsedCollectionProps {
     collection: CardCollection;
-    send: (type: string, message: any) => void;
+    actions: RoomActions;
     children?: React.ReactNode;
 }
 
-export default ({ collection: { name, cards }, send }: CollapsedCollectionProps) => {
+export default ({ collection: { name, cards }, actions }: CollapsedCollectionProps) => {
     return (
         <>
             <Typography variant="body1" component="strong">
@@ -23,7 +24,7 @@ export default ({ collection: { name, cards }, send }: CollapsedCollectionProps)
             <List component="div" disablePadding>
                 {map(
                     (card: Card) => (
-                        <CollapsedCard key={card.uid} send={send} card={card} />
+                        <CollapsedCard key={card.uid} actions={actions} card={card} />
                     ),
                     cards
                 )}

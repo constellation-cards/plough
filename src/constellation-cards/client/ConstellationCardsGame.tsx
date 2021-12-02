@@ -16,6 +16,14 @@ interface ConstellationCardsGameProps {
     children?: React.ReactNode
 }
 
+export interface RoomActions {
+    moveCardAction: (cardUid: string, dest: string) => void;
+}
+
+const createActions = (room: Room): RoomActions => ({
+    moveCardAction: (cardUid: string, dest: string) => room.send("move-card", {cardUid, dest})
+})
+
 const sortWithRules = [
     ascend(prop('name'))
 ]
@@ -38,18 +46,18 @@ export default (props: ConstellationCardsGameProps) => {
 
     const [expanded, collapsed] = gameCollectionList(gameState?.collections)
 
-    const send = (type: string, message: any) => props.room.send(type, message)
+    const actions = createActions(props.room)
 
     return (
         <Grid container spacing={2}>
             <Grid item xs={4}>
                 <Stack spacing={2}>
-                    {map((collection: CardCollection) => <CollapsedCollection key={collection.uid} send={send} collection={collection} />, collapsed)}
+                    {map((collection: CardCollection) => <CollapsedCollection key={collection.uid} actions={actions} collection={collection} />, collapsed)}
                 </Stack>
             </Grid>
             <Grid item xs={8}>
             <Stack spacing={2}>
-                    {map((collection: CardCollection) => <ExpandedCollection key={collection.uid} send={send} collection={collection} />, expanded)}
+                    {map((collection: CardCollection) => <ExpandedCollection key={collection.uid} actions={actions} collection={collection} />, expanded)}
                 </Stack>
             </Grid>
         </Grid>

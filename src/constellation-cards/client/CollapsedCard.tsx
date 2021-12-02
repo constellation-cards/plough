@@ -1,6 +1,4 @@
 import React, { useState } from "react"
-
-import { Card as CardState } from "./state/Card"
 import {
     Button,
     Card,
@@ -16,20 +14,20 @@ import {
 } from "@mui/material"
 import NavigateNextIcon from "@mui/icons-material/NavigateNext"
 
+import { Card as CardState } from "./state/Card"
+import { RoomActions } from "./ConstellationCardsGame"
+
 interface CollapsedCardProps {
     card: CardState;
-    send: (type: string, message: any) => void;
+    actions: RoomActions;
     children?: React.ReactNode;
 }
 
 export default ({
-    card: { uid, name, flipped, front, back }, send
+    card: { uid, name, flipped, front, back }, actions
 }: CollapsedCardProps) => {
     const onClickMoveCard = (event: any) => {
-        send("move-card", {
-            cardUid: uid,
-            dest: "default"
-        })
+        actions.moveCardAction(uid, "default")
     }
 
     return (
