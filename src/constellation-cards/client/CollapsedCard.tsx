@@ -14,14 +14,14 @@ interface CollapsedCardProps {
 export default ({
     card: { uid, name }, actions
 }: CollapsedCardProps) => {
-    const onClickMoveCard = (event: any) => actions.moveCardAction(uid, "default")
+    const onClickPickCard = (event: any) => actions.moveCardAction(uid, "default")
 
     return (
         <ListItem button>   
             <ListItemText primary={name} />
             <ListItemSecondaryAction>
                 <Tooltip title="Deal this specific card">
-                    <IconButton edge="end" aria-label="deal" onClick={onClickMoveCard}>
+                    <IconButton edge="end" aria-label="deal" onClick={onClickPickCard}>
                         <NavigateNextIcon />
                     </IconButton>
                 </Tooltip>

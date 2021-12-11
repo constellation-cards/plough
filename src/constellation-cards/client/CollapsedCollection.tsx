@@ -1,34 +1,69 @@
-import React from "react"
-import { map } from "ramda"
-import { List, Typography } from "@mui/material"
 import AutoAwesomeMotionIcon from "@mui/icons-material/AutoAwesomeMotion"
+import NavigateNextIcon from "@mui/icons-material/NavigateNext"
+import Collapse from "@mui/material/Collapse"
+import IconButton from "@mui/material/IconButton"
+import List from "@mui/material/List"
+import ListItem from "@mui/material/ListItem"
+import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction"
+import Tooltip from "@mui/material/Tooltip"
+import Typography from "@mui/material/Typography"
+import { map } from "ramda"
+import React, { useState } from "react"
 
-import { CardCollection } from "./state/CardCollection"
-import { Card } from "./state/Card"
 import CollapsedCard from "./CollapsedCard"
 import { RoomActions } from "./ConstellationCardsGame"
+import { Card } from "./state/Card"
+import { CardCollection } from "./state/CardCollection"
 
 interface CollapsedCollectionProps {
-    collection: CardCollection;
-    actions: RoomActions;
-    children?: React.ReactNode;
+    collection: CardCollection
+    actions: RoomActions
+    children?: React.ReactNode
 }
 
-export default ({ collection: { name, cards }, actions }: CollapsedCollectionProps) => {
+export default ({
+    collection: { uid, name, cards },
+    actions,
+}: CollapsedCollectionProps) => {
+    const [isExpanded, setIsExpanded] = useState(false)
+
+    const toggleExpanded = (event: any) => setIsExpanded(!isExpanded)
+
+    const onClickDealCard = (event: any) => {
+        const randomCard = cards[Math.floor(Math.random() * cards.length)];
+        actions.moveCardAction(randomCard.uid, "default")
+    }
+
     return (
-        <>
-            <Typography variant="body1" component="strong">
-                <AutoAwesomeMotionIcon /><span />
-                {name}
-            </Typography>
-            <List component="div" disablePadding>
-                {map(
-                    (card: Card) => (
-                        <CollapsedCard key={card.uid} actions={actions} card={card} />
-                    ),
-                    cards
-                )}
-            </List>
-        </>
+        <React.Fragment>
+            <ListItem key={uid} onClick={toggleExpanded}>
+                <Typography variant="body1" component="strong">
+                    <AutoAwesomeMotionIcon />
+                    <span />
+                    {name}
+                </Typography>
+                <ListItemSecondaryAction>
+                <Tooltip title="Deal this specific card">
+                    <IconButton edge="end" aria-label="deal" onClick={onClickDealCard}>
+                        <NavigateNextIcon />
+                    </IconButton>
+                </Tooltip>
+            </ListItemSecondaryAction>
+            </ListItem>
+            <Collapse in={isExpanded}>
+                <List component="div" disablePadding>
+                    {map(
+                        (card: Card) => (
+                            <CollapsedCard
+                                key={card.uid}
+                                actions={actions}
+                                card={card}
+                            />
+                        ),
+                        cards
+                    )}
+                </List>
+            </Collapse>
+        </React.Fragment>
     )
 }

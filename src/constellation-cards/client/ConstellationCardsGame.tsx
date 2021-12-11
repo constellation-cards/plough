@@ -5,7 +5,7 @@ import { Room } from "colyseus.js"
 import { ascend, map, partition, prop, sortWith } from "ramda"
 import React, { useEffect, useState } from "react"
 
-import CollapsedCollection from "./CollapsedCollection"
+import CollapsedCollectionList from "./CollapsedCollectionList"
 import ExpandedCollection from "./ExpandedCollection"
 import { CardCollection } from "./state/CardCollection"
 import { ConstellationCardsState } from "./state/ConstellationCardsState"
@@ -29,9 +29,10 @@ const sortWithRules = [
     ascend(prop('name'))
 ]
 
-const gameCollectionList = (collections: MapSchema<CardCollection>) => {
+const gameCollectionList = (collections: MapSchema<CardCollection>): [CardCollection[], CardCollection[]] => {
     const collectionValues = collections ? Array.from(collections.values()) : []
-    const collectionArray = sortWith(sortWithRules, collectionValues)
+    // Hey Typescript, why do I have to force this type?
+    const collectionArray = sortWith(sortWithRules, collectionValues) as CardCollection[]
     return partition((collection: CardCollection) => collection.expanded, collectionArray)
 }
 
@@ -52,9 +53,7 @@ export default ({room}: ConstellationCardsGameProps) => {
     return (
         <Grid container spacing={2}>
             <Grid item xs={4}>
-                <Stack spacing={2}>
-                    {map((collection: CardCollection) => <CollapsedCollection key={collection.uid} actions={actions} collection={collection} />, collapsed)}
-                </Stack>
+                <CollapsedCollectionList actions={actions} collections={collapsed} />
             </Grid>
             <Grid item xs={8}>
             <Stack spacing={2}>

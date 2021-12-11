@@ -21,7 +21,7 @@ export default ({ card, actions }: ExpandedCardProps) => {
         actions.discardCardAction(card.uid, card.home)
 
     return (
-        <React.Fragment>
+        <React.Fragment key={card.uid}>
             <CardFace card={card} />
             <IconButton
                 edge="end"

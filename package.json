@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build:all": "npm run clean && tsc && webpack",
     "build:client": "webpack",
     "build:server": "npm run clean && tsc",
     "build:schema": "npx schema-codegen ./src/constellation-cards/state.ts --output ./src/constellation-cards/client/state --ts",

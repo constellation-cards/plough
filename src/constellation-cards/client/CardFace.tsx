@@ -23,7 +23,7 @@ export default ({
     const desc = flipped ? front.description : back.description
 
     return (
-        <Paper variant="outlined" elevation={4} sx={{
+        <Paper variant="outlined" sx={{
             "width": "4in",
             "height": "6in"
         }}>
