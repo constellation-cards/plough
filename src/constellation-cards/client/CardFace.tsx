@@ -19,8 +19,8 @@ interface CardFaceProps {
 export default ({
     card: { flipped, front, back }
 }: CardFaceProps) => {
-    const name = flipped ? front.name : back.name
-    const desc = flipped ? front.description : back.description
+    const name = flipped ? back.name : front.name
+    const desc = flipped ? back.description : front.description
 
     return (
         <Paper variant="outlined" sx={{
