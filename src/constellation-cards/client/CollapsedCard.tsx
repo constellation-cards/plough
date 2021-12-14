@@ -4,21 +4,23 @@ import React from "react"
 
 import { RoomActions } from "./ConstellationCardsGame"
 import { Card as CardState } from "./state/Card"
+import { CardCollection } from "./state/CardCollection"
 
 interface CollapsedCardProps {
     card: CardState;
+    activeCollection: CardCollection;
     actions: RoomActions;
     children?: React.ReactNode;
 }
 
 export default ({
-    card: { uid, name }, actions
+    card, activeCollection, actions
 }: CollapsedCardProps) => {
-    const onClickPickCard = (event: any) => actions.moveCardAction(uid, "default")
+    const onClickPickCard = (_event: any) => actions.moveCardAction(card, activeCollection)
 
     return (
         <ListItem button>   
-            <ListItemText primary={name} />
+            <ListItemText primary={card.name} />
             <ListItemSecondaryAction>
                 <Tooltip title="Deal this specific card">
                     <IconButton edge="end" aria-label="deal" onClick={onClickPickCard}>

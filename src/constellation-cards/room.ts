@@ -15,7 +15,7 @@ interface CardDesc {
     description: string;
 }
 
-interface UpsertCardAction {
+export interface UpsertCardAction {
     uid?: Uid;
     front: CardDesc;
     back: CardDesc;
@@ -23,16 +23,16 @@ interface UpsertCardAction {
     home: Uid;
 }
 
-interface CreateCollectionAction {
+export interface CreateCollectionAction {
     name: string;
     expanded: boolean;
 }
 
-interface DeleteCollectionAction {
+export interface DeleteCollectionAction {
     uid: Uid;
 }
 
-interface MoveCardAction {
+export interface MoveCardAction {
     cardUid: Uid;
     dest: Uid;
 }

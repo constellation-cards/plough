@@ -5,8 +5,10 @@ import { Room } from "colyseus.js"
 import { ascend, map, partition, prop, sortWith } from "ramda"
 import React, { useEffect, useState } from "react"
 
+import { CreateCollectionAction, DeleteCollectionAction, MoveCardAction, UpsertCardAction } from "../room"
 import CollapsedCollectionList from "./CollapsedCollectionList"
 import ExpandedCollection from "./ExpandedCollection"
+import { Card } from "./state/Card"
 import { CardCollection } from "./state/CardCollection"
 import { ConstellationCardsState } from "./state/ConstellationCardsState"
 
@@ -16,13 +18,25 @@ interface ConstellationCardsGameProps {
 }
 
 export interface RoomActions {
-    moveCardAction: (cardUid: string, dest: string) => void;
-    discardCardAction: (cardUid: string, homeUid: string) => void;
+    moveCardAction: (card: Card, dest: CardCollection) => void;
+    discardCardAction: (card: Card) => void;
 }
 
 const createActions = (room: Room): RoomActions => ({
-    moveCardAction: (cardUid: string, dest: string) => room.send("move-card", {cardUid, dest}),
-    discardCardAction: (cardUid: string, homeUid: string) => room.send("move-card", {cardUid, dest: homeUid}),
+    moveCardAction: (card: Card, dest: CardCollection) => {
+        const data: MoveCardAction = {
+            cardUid: card.uid,
+            dest: dest.uid
+        }
+        room.send("move-card", data)
+    },
+    discardCardAction: (card: Card) => {
+        const data: MoveCardAction = {
+            cardUid: card.uid,
+            dest: card.home
+        }
+        room.send("move-card", data)
+    },
 })
 
 const sortWithRules = [
@@ -53,7 +67,7 @@ export default ({room}: ConstellationCardsGameProps) => {
     return (
         <Grid container spacing={2}>
             <Grid item xs={4}>
-                <CollapsedCollectionList actions={actions} collections={collapsed} />
+                <CollapsedCollectionList collections={collapsed} activeCollection={expanded[0]} actions={actions} />
             </Grid>
             <Grid item xs={8}>
             <Stack spacing={2}>

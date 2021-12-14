@@ -17,8 +17,8 @@ interface ExpandedCardProps {
  * and actions you can take (e.g. return to stack, flip)
  */
 export default ({ card, actions }: ExpandedCardProps) => {
-    const onClickDiscardCard = (event: any) =>
-        actions.discardCardAction(card.uid, card.home)
+    const onClickDiscardCard = (_event: any) =>
+        actions.discardCardAction(card)
 
     return (
         <React.Fragment key={card.uid}>

@@ -16,22 +16,24 @@ import { Card } from "./state/Card"
 import { CardCollection } from "./state/CardCollection"
 
 interface CollapsedCollectionProps {
-    collection: CardCollection
-    actions: RoomActions
-    children?: React.ReactNode
+    collection: CardCollection;
+    activeCollection: CardCollection;
+    actions: RoomActions;
+    children?: React.ReactNode;
 }
 
 export default ({
     collection: { uid, name, cards },
+    activeCollection,
     actions,
 }: CollapsedCollectionProps) => {
     const [isExpanded, setIsExpanded] = useState(false)
 
-    const toggleExpanded = (event: any) => setIsExpanded(!isExpanded)
+    const toggleExpanded = (_event: any) => setIsExpanded(!isExpanded)
 
-    const onClickDealCard = (event: any) => {
+    const onClickDealCard = (_event: any) => {
         const randomCard = cards[Math.floor(Math.random() * cards.length)];
-        actions.moveCardAction(randomCard.uid, "default")
+        actions.moveCardAction(randomCard, activeCollection)
     }
 
     return (
@@ -56,6 +58,7 @@ export default ({
                         (card: Card) => (
                             <CollapsedCard
                                 key={card.uid}
+                                activeCollection={activeCollection}
                                 actions={actions}
                                 card={card}
                             />

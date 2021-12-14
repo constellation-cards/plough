@@ -8,14 +8,15 @@ import { CardCollection } from "./state/CardCollection"
 
 interface CollapsedCollectionListProps {
     collections: CardCollection[];
+    activeCollection: CardCollection;
     actions: RoomActions;
     children?: React.ReactNode;
 }
 
-export default ({actions, collections}: CollapsedCollectionListProps) => {
+export default ({collections, activeCollection: activeContainer, actions}: CollapsedCollectionListProps) => {
     return (
         <List>
-            {map((collection: CardCollection) => <CollapsedCollection key={collection.uid} actions={actions} collection={collection} />, collections)}
+            {map((collection: CardCollection) => <CollapsedCollection key={collection.uid} activeCollection={activeContainer} actions={actions} collection={collection} />, collections)}
         </List>
     )
 }

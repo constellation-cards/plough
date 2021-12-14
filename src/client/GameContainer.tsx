@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react"
+import React, { useEffect, useState } from "react"
+
 import ConstellationCardsGame from "../constellation-cards/client/ConstellationCardsGame"
 import { connect } from "./connection"
 
-export default (props: object) => {
+export default (_props: object) => {
     const [room, setRoom] = useState(null)
     const [error, setError] = useState(null)
 
