@@ -6,8 +6,8 @@ import { ascend, map, partition, prop, sortWith } from "ramda"
 import React, { useEffect, useState } from "react"
 
 import { CreateCollectionAction, DeleteCollectionAction, MoveCardAction, UpsertCardAction } from "../room"
-import CollapsedCollectionList from "./CollapsedCollectionList"
-import ExpandedCollection from "./ExpandedCollection"
+import ExpandedCollection from "./Spread"
+import CollapsedCollectionList from "./Stacks"
 import { Card } from "./state/Card"
 import { CardCollection } from "./state/CardCollection"
 import { ConstellationCardsState } from "./state/ConstellationCardsState"
@@ -60,18 +60,18 @@ export default ({room}: ConstellationCardsGameProps) => {
         })
     }, [room])
 
-    const [expanded, collapsed] = gameCollectionList(gameState?.collections)
+    const [spreads, stacks] = gameCollectionList(gameState?.collections)
 
     const actions = createActions(room)
 
     return (
         <Grid container spacing={2}>
             <Grid item xs={4}>
-                <CollapsedCollectionList collections={collapsed} activeCollection={expanded[0]} actions={actions} />
+                <CollapsedCollectionList collections={stacks} activeCollection={spreads[0]} actions={actions} />
             </Grid>
             <Grid item xs={8}>
             <Stack spacing={2}>
-                    {map((collection: CardCollection) => <ExpandedCollection key={collection.uid} actions={actions} collection={collection} />, expanded)}
+                    {map((collection: CardCollection) => <ExpandedCollection key={collection.uid} actions={actions} collection={collection} />, spreads)}
                 </Stack>
             </Grid>
         </Grid>

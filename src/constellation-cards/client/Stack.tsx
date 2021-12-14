@@ -10,8 +10,8 @@ import Typography from "@mui/material/Typography"
 import { map } from "ramda"
 import React, { useState } from "react"
 
-import CollapsedCard from "./CollapsedCard"
 import { RoomActions } from "./ConstellationCardsGame"
+import CollapsedCard from "./StackCard"
 import { Card } from "./state/Card"
 import { CardCollection } from "./state/CardCollection"
 

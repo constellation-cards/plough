@@ -2,8 +2,8 @@ import List from "@mui/material/List"
 import { map } from "ramda"
 import React from "react"
 
-import CollapsedCollection from "./CollapsedCollection"
 import { RoomActions } from "./ConstellationCardsGame"
+import CollapsedCollection from "./Stack"
 import { CardCollection } from "./state/CardCollection"
 
 interface CollapsedCollectionListProps {
