@@ -5,7 +5,8 @@ import { Room } from "colyseus.js"
 import { ascend, map, partition, prop, sortWith } from "ramda"
 import React, { useEffect, useState } from "react"
 
-import { CreateCollectionAction, DeleteCollectionAction, MoveCardAction, UpsertCardAction } from "../room"
+import { CardActionNames } from "../constants"
+import { CreateCollectionAction, DeleteCollectionAction, FlipCardAction, MoveCardAction, UpsertCardAction } from "../room"
 import ExpandedCollection from "./Spread"
 import CollapsedCollectionList from "./Stacks"
 import { Card } from "./state/Card"
@@ -20,6 +21,7 @@ interface ConstellationCardsGameProps {
 export interface RoomActions {
     moveCardAction: (card: Card, dest: CardCollection) => void;
     discardCardAction: (card: Card) => void;
+    flipCardAction: (card: Card) => void;
 }
 
 const createActions = (room: Room): RoomActions => ({
@@ -28,15 +30,21 @@ const createActions = (room: Room): RoomActions => ({
             cardUid: card.uid,
             dest: dest.uid
         }
-        room.send("move-card", data)
+        room.send(CardActionNames.MOVE_CARD, data)
     },
     discardCardAction: (card: Card) => {
         const data: MoveCardAction = {
             cardUid: card.uid,
             dest: card.home
         }
-        room.send("move-card", data)
+        room.send(CardActionNames.MOVE_CARD, data)
     },
+    flipCardAction: (card: Card) => {
+        const data: FlipCardAction = {
+            cardUid: card.uid
+        }
+        room.send(CardActionNames.FLIP_CARD, data)
+    }
 })
 
 const sortWithRules = [

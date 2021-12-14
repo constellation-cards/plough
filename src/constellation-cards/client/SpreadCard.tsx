@@ -1,5 +1,7 @@
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 import ClearIcon from "@mui/icons-material/Clear"
-import { IconButton, ListItem, ListItemSecondaryAction, ListItemText, Tooltip } from "@mui/material"
+import Grid from "@mui/material/Grid"
+import IconButton from "@mui/material/IconButton"
 import React from "react"
 
 import CardFace from "./CardFace"
@@ -17,19 +19,34 @@ interface ExpandedCardProps {
  * and actions you can take (e.g. return to stack, flip)
  */
 export default ({ card, actions }: ExpandedCardProps) => {
-    const onClickDiscardCard = (_event: any) =>
-        actions.discardCardAction(card)
+    const onClickDiscardCard = (_event: any) => actions.discardCardAction(card)
+    const onClickFlipCard = (_event: any) => actions.flipCardAction(card)
 
     return (
         <React.Fragment key={card.uid}>
-            <CardFace card={card} />
-            <IconButton
-                edge="end"
-                aria-label="deal"
-                onClick={onClickDiscardCard}
-            >
-                <ClearIcon />
-            </IconButton>
+            <Grid>
+                <Grid item xs={12}>
+                    <CardFace card={card} />
+                </Grid>
+                <Grid item xs={4}>
+                    <IconButton
+                        edge="end"
+                        aria-label="deal"
+                        onClick={onClickDiscardCard}
+                    >
+                        <ClearIcon />
+                    </IconButton>
+                </Grid>
+                <Grid item xs={4}>
+                    <IconButton
+                        edge="end"
+                        aria-label="deal"
+                        onClick={onClickFlipCard}
+                    >
+                        <AutorenewIcon />
+                    </IconButton>
+                </Grid>
+            </Grid>
         </React.Fragment>
     )
 }

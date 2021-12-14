@@ -10,6 +10,8 @@ function generateUid() {
     return randomBytes(16).toString("hex")
 }
 
+import { CardActionNames } from "./constants"
+
 interface CardDesc {
     name: string;
     description: string;
@@ -37,7 +39,9 @@ export interface MoveCardAction {
     dest: Uid;
 }
 
-type FindCollectionCallback = (card: Card, collection: CardCollection) => void;
+export interface FlipCardAction {
+    cardUid: Uid;
+}
 
 export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
     // Given a card, move it from its current location to a named destination
@@ -99,7 +103,7 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
 
         // BEGIN state management actions
 
-        this.onMessage("upsert-card", (client, data: UpsertCardAction) => {
+        this.onMessage(CardActionNames.UPSERT_CARD, (_client, data: UpsertCardAction) => {
             let card: Card;
 
             if (data.uid) {
@@ -136,7 +140,7 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
 
         // TODO: delete-card
 
-        this.onMessage("create-collection", (client, data: CreateCollectionAction) => {
+        this.onMessage(CardActionNames.CREATE_COLLECTION, (_client, data: CreateCollectionAction) => {
             const collection = new CardCollection()
             collection.uid = generateUid()
             collection.name = data.name
@@ -145,7 +149,7 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
             this.state.collections.set(collection.uid, collection)
         })
 
-        this.onMessage("delete-collection", (client, data: DeleteCollectionAction) => {
+        this.onMessage(CardActionNames.DELETE_COLLECTION, (_client, data: DeleteCollectionAction) => {
             // Return cards in this collection to their home
             const collection = this.state.collections.get(data.uid)
             if (collection) {
@@ -160,10 +164,17 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
             }
         })
 
-        this.onMessage("move-card", (client, data: MoveCardAction) => {
+        this.onMessage(CardActionNames.MOVE_CARD, (_client, data: MoveCardAction) => {
             const card: Card = this.state.cards.get(data.cardUid)
             if (card) {
                 this.moveCard(card, data.dest)
+            }
+        })
+
+        this.onMessage(CardActionNames.FLIP_CARD, (_client, data: FlipCardAction) => {
+            const card: Card = this.state.cards.get(data.cardUid)
+            if (card) {
+                card.flipped = !card.flipped
             }
         })
 
