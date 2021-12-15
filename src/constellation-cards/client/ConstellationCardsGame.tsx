@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react"
 
 import { CardActionNames } from "../constants"
 import { CreateCollectionAction, DeleteCollectionAction, FlipCardAction, MoveCardAction, UpsertCardAction } from "../room"
+import CreateCollectionDialog from "./CreateCollectionDialog"
 import ExpandedCollection from "./Spread"
 import CollapsedCollectionList from "./Stacks"
 import { Card } from "./state/Card"
@@ -22,6 +23,7 @@ export interface RoomActions {
     moveCardAction: (card: Card, dest: CardCollection) => void;
     discardCardAction: (card: Card) => void;
     flipCardAction: (card: Card) => void;
+    createCollectionAction: (name: string, expanded: boolean) => void;
 }
 
 const createActions = (room: Room): RoomActions => ({
@@ -44,6 +46,13 @@ const createActions = (room: Room): RoomActions => ({
             cardUid: card.uid
         }
         room.send(CardActionNames.FLIP_CARD, data)
+    },
+    createCollectionAction:  (name: string, expanded: boolean) => {
+        const data: CreateCollectionAction = {
+            name,
+            expanded
+        }
+        room.send(CardActionNames.CREATE_COLLECTION, data)
     }
 })
 
@@ -78,8 +87,9 @@ export default ({room}: ConstellationCardsGameProps) => {
                 <CollapsedCollectionList collections={stacks} activeCollection={spreads[0]} actions={actions} />
             </Grid>
             <Grid item xs={8}>
-            <Stack spacing={2}>
+                <Stack spacing={2}>
                     {map((collection: CardCollection) => <ExpandedCollection key={collection.uid} actions={actions} collection={collection} />, spreads)}
+                    <CreateCollectionDialog actions={actions} createExpanded={true} />
                 </Stack>
             </Grid>
         </Grid>
