@@ -45,8 +45,8 @@ export default ({
                     {name}
                 </Typography>
                 <ListItemSecondaryAction>
-                <Tooltip title="Deal this specific card">
-                    <IconButton edge="end" aria-label="deal" onClick={onClickDealCard}>
+                <Tooltip title="Deal a random card from this stack">
+                    <IconButton disabled={cards.length === 0} edge="end" aria-label="deal" onClick={onClickDealCard}>
                         <NavigateNextIcon />
                     </IconButton>
                 </Tooltip>

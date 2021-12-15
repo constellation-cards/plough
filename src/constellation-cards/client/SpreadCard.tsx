@@ -1,7 +1,8 @@
-import AutorenewIcon from '@mui/icons-material/Autorenew';
+import AutorenewIcon from "@mui/icons-material/Autorenew"
 import ClearIcon from "@mui/icons-material/Clear"
-import Grid from "@mui/material/Grid"
-import IconButton from "@mui/material/IconButton"
+import Button from "@mui/material/Button"
+import ButtonGroup from "@mui/material/ButtonGroup"
+import Tooltip from "@mui/material/Tooltip"
 import React from "react"
 
 import CardFace from "./CardFace"
@@ -24,29 +25,22 @@ export default ({ card, actions }: ExpandedCardProps) => {
 
     return (
         <React.Fragment key={card.uid}>
-            <Grid>
-                <Grid item xs={12}>
-                    <CardFace card={card} />
-                </Grid>
-                <Grid item xs={4}>
-                    <IconButton
-                        edge="end"
-                        aria-label="deal"
-                        onClick={onClickDiscardCard}
-                    >
-                        <ClearIcon />
-                    </IconButton>
-                </Grid>
-                <Grid item xs={4}>
-                    <IconButton
-                        edge="end"
-                        aria-label="deal"
-                        onClick={onClickFlipCard}
-                    >
-                        <AutorenewIcon />
-                    </IconButton>
-                </Grid>
-            </Grid>
+            <CardFace card={card}>
+                <div>
+                <ButtonGroup variant="contained">
+                    <Tooltip title="Return this card to its home stack">
+                        <Button variant="contained" aria-label="discard" startIcon={<ClearIcon />} onClick={onClickDiscardCard}>
+                            Discard
+                        </Button>
+                    </Tooltip>
+                    <Tooltip title="Flip this card">
+                        <Button variant="contained" aria-label="flip" startIcon={<AutorenewIcon />} onClick={onClickFlipCard}>
+                            Flip
+                        </Button>
+                    </Tooltip>
+                </ButtonGroup>
+                </div>
+            </CardFace>
         </React.Fragment>
     )
 }
