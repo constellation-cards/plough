@@ -1,17 +1,19 @@
-import AutoAwesomeMotionIcon from "@mui/icons-material/AutoAwesomeMotion"
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import NavigateNextIcon from "@mui/icons-material/NavigateNext"
+import { ListItemIcon } from "@mui/material"
 import Collapse from "@mui/material/Collapse"
 import IconButton from "@mui/material/IconButton"
 import List from "@mui/material/List"
 import ListItem from "@mui/material/ListItem"
 import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction"
+import ListItemText from "@mui/material/ListItemText"
 import Tooltip from "@mui/material/Tooltip"
-import Typography from "@mui/material/Typography"
 import { map } from "ramda"
 import React, { useState } from "react"
 
 import { RoomActions } from "./ConstellationCardsGame"
-import CollapsedCard from "./StackCard"
+import StackCard from "./StackCard"
 import { Card } from "./state/Card"
 import { CardCollection } from "./state/CardCollection"
 
@@ -39,11 +41,10 @@ export default ({
     return (
         <React.Fragment>
             <ListItem key={uid} onClick={toggleExpanded}>
-                <Typography variant="body1" component="strong">
-                    <AutoAwesomeMotionIcon />
-                    <span />
-                    {name}
-                </Typography>
+                <ListItemIcon>
+                    {isExpanded? <ArrowDropDownIcon /> : <ArrowRightIcon />}
+                </ListItemIcon>
+                <ListItemText primary={name} />
                 <ListItemSecondaryAction>
                 <Tooltip title="Deal a random card from this stack">
                     <IconButton disabled={cards.length === 0} edge="end" aria-label="deal" onClick={onClickDealCard}>
@@ -56,7 +57,7 @@ export default ({
                 <List component="div" disablePadding>
                     {map(
                         (card: Card) => (
-                            <CollapsedCard
+                            <StackCard
                                 key={card.uid}
                                 activeCollection={activeCollection}
                                 actions={actions}

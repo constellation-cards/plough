@@ -8,8 +8,8 @@ import React, { useEffect, useState } from "react"
 import { CardActionNames } from "../constants"
 import { CreateCollectionAction, DeleteCollectionAction, FlipCardAction, MoveCardAction, UpsertCardAction } from "../room"
 import CreateCollectionDialog from "./CreateCollectionDialog"
-import ExpandedCollection from "./Spread"
-import CollapsedCollectionList from "./Stacks"
+import Spread from "./Spread"
+import Stacks from "./Stacks"
 import { Card } from "./state/Card"
 import { CardCollection } from "./state/CardCollection"
 import { ConstellationCardsState } from "./state/ConstellationCardsState"
@@ -84,11 +84,11 @@ export default ({room}: ConstellationCardsGameProps) => {
     return (
         <Grid container spacing={2}>
             <Grid item xs={4}>
-                <CollapsedCollectionList collections={stacks} activeCollection={spreads[0]} actions={actions} />
+                <Stacks collections={stacks} activeCollection={spreads[0]} actions={actions} />
             </Grid>
             <Grid item xs={8}>
                 <Stack spacing={2}>
-                    {map((collection: CardCollection) => <ExpandedCollection key={collection.uid} actions={actions} collection={collection} />, spreads)}
+                    {map((collection: CardCollection) => <Spread key={collection.uid} actions={actions} collection={collection} />, spreads)}
                     <CreateCollectionDialog actions={actions} createExpanded={true} />
                 </Stack>
             </Grid>

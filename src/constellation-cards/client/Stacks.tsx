@@ -15,7 +15,7 @@ interface CollapsedCollectionListProps {
 
 export default ({collections, activeCollection: activeContainer, actions}: CollapsedCollectionListProps) => {
     return (
-        <List>
+        <List sx={{ bgcolor: 'background.paper' }}>
             {map((collection: CardCollection) => <CollapsedCollection key={collection.uid} activeCollection={activeContainer} actions={actions} collection={collection} />, collections)}
         </List>
     )

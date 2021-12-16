@@ -19,8 +19,8 @@ export default ({
     const onClickPickCard = (_event: any) => actions.moveCardAction(card, activeCollection)
 
     return (
-        <ListItem button>   
-            <ListItemText primary={card.name} />
+        <ListItem button>
+            <ListItemText inset primary={card.name} />
             <ListItemSecondaryAction>
                 <Tooltip title="Deal this specific card">
                     <IconButton edge="end" aria-label="deal" onClick={onClickPickCard}>
