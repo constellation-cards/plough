@@ -5,7 +5,7 @@ import { map } from "ramda"
 import React from "react"
 
 import { RoomActions } from "./ConstellationCardsGame"
-import ExpandedCard from "./SpreadCard"
+import SpreadCard from "./SpreadCard"
 import { Card } from "./state/Card"
 import { CardCollection } from "./state/CardCollection"
 
@@ -32,7 +32,7 @@ export default ({
                         <Grid item xs={4} style={{
                             "minWidth": "4.1in"
                         }}>
-                            <ExpandedCard
+                            <SpreadCard
                                 key={card.uid}
                                 actions={actions}
                                 card={card}

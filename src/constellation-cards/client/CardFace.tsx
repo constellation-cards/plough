@@ -7,6 +7,7 @@ import { Card } from "./state/Card"
 
 interface CardFaceProps {
     card: Card
+    isFlipped?: boolean | undefined;
     children?: React.ReactNode
 }
 
@@ -26,7 +27,10 @@ function formatDesc(line: string) {
  *
  * This is meant both for expanded collections and card mouseover/preview mode.
  */
-export default ({ card: { flipped, front, back }, children }: CardFaceProps) => {
+export default ({ card: { front, back, flipped }, isFlipped, children }: CardFaceProps) => {
+    if (isFlipped === undefined) {
+        isFlipped = flipped;
+    }
     const name = flipped ? back.name : front.name
     const desc = flipped ? back.description : front.description
 
