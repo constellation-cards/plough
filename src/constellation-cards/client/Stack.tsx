@@ -46,7 +46,7 @@ export default ({
                 </ListItemIcon>
                 <ListItemText primary={name} />
                 <ListItemSecondaryAction>
-                <Tooltip title="Deal a random card from this stack">
+                <Tooltip title="Deal a random card from this stack" placement="right">
                     <IconButton disabled={cards.length === 0} edge="end" aria-label="deal" onClick={onClickDealCard}>
                         <NavigateNextIcon />
                     </IconButton>

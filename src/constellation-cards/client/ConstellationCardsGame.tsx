@@ -1,5 +1,6 @@
 import { MapSchema } from "@colyseus/schema"
-import Grid from "@mui/material/Grid"
+import { AppBar, Button, Drawer, Toolbar } from "@mui/material"
+import Container from "@mui/material/Container"
 import Stack from "@mui/material/Stack"
 import { Room } from "colyseus.js"
 import { ascend, map, partition, prop, sortWith } from "ramda"
@@ -20,55 +21,62 @@ interface ConstellationCardsGameProps {
 }
 
 export interface RoomActions {
-    moveCardAction: (card: Card, dest: CardCollection) => void;
-    discardCardAction: (card: Card) => void;
-    flipCardAction: (card: Card) => void;
-    createCollectionAction: (name: string, expanded: boolean) => void;
+    moveCardAction: (card: Card, dest: CardCollection) => void
+    discardCardAction: (card: Card) => void
+    flipCardAction: (card: Card) => void
+    createCollectionAction: (name: string, expanded: boolean) => void
 }
 
 const createActions = (room: Room): RoomActions => ({
     moveCardAction: (card: Card, dest: CardCollection) => {
         const data: MoveCardAction = {
             cardUid: card.uid,
-            dest: dest.uid
+            dest: dest.uid,
         }
         room.send(CardActionNames.MOVE_CARD, data)
     },
     discardCardAction: (card: Card) => {
         const data: MoveCardAction = {
             cardUid: card.uid,
-            dest: card.home
+            dest: card.home,
         }
         room.send(CardActionNames.MOVE_CARD, data)
     },
     flipCardAction: (card: Card) => {
         const data: FlipCardAction = {
-            cardUid: card.uid
+            cardUid: card.uid,
         }
         room.send(CardActionNames.FLIP_CARD, data)
     },
-    createCollectionAction:  (name: string, expanded: boolean) => {
+    createCollectionAction: (name: string, expanded: boolean) => {
         const data: CreateCollectionAction = {
             name,
-            expanded
+            expanded,
         }
         room.send(CardActionNames.CREATE_COLLECTION, data)
-    }
+    },
 })
 
-const sortWithRules = [
-    ascend(prop('name'))
-]
+const sortWithRules = [ascend(prop("name"))]
 
-const gameCollectionList = (collections: MapSchema<CardCollection>): [CardCollection[], CardCollection[]] => {
+const gameCollectionList = (
+    collections: MapSchema<CardCollection>
+): [CardCollection[], CardCollection[]] => {
     const collectionValues = collections ? Array.from(collections.values()) : []
     // Hey Typescript, why do I have to force this type?
-    const collectionArray = sortWith(sortWithRules, collectionValues) as CardCollection[]
-    return partition((collection: CardCollection) => collection.expanded, collectionArray)
+    const collectionArray = sortWith(
+        sortWithRules,
+        collectionValues
+    ) as CardCollection[]
+    return partition(
+        (collection: CardCollection) => collection.expanded,
+        collectionArray
+    )
 }
 
-export default ({room}: ConstellationCardsGameProps) => {
+export default ({ room }: ConstellationCardsGameProps) => {
     const [gameState, setGameState] = useState<ConstellationCardsState>(null)
+    const [isDrawerOpen, setDrawerOpen] = useState(false)
 
     useEffect(() => {
         console.log("Registering onStateChange event with room")
@@ -81,17 +89,39 @@ export default ({room}: ConstellationCardsGameProps) => {
 
     const actions = createActions(room)
 
+    const onClickOpenDrawer = (_event: any) => setDrawerOpen(true)
+    const onCloseDrawer = (_event: any) => setDrawerOpen(false)
+
     return (
-        <Grid container spacing={2}>
-            <Grid item xs={4}>
-                <Stacks collections={stacks} activeCollection={spreads[0]} actions={actions} />
-            </Grid>
-            <Grid item xs={8}>
-                <Stack spacing={2}>
-                    {map((collection: CardCollection) => <Spread key={collection.uid} actions={actions} collection={collection} />, spreads)}
-                    <CreateCollectionDialog actions={actions} createExpanded={true} />
-                </Stack>
-            </Grid>
-        </Grid>
+        <Container>
+            <AppBar position="static">
+                <Toolbar>
+                    <Button color="inherit" onClick={onClickOpenDrawer}>All Cards</Button>
+                </Toolbar>
+            </AppBar>
+            <Drawer anchor="left" open={isDrawerOpen} onClose={onCloseDrawer}>
+                <Stacks
+                    collections={stacks}
+                    activeCollection={spreads[0]}
+                    actions={actions}
+                />
+            </Drawer>
+            <Stack spacing={2}>
+                {map(
+                    (collection: CardCollection) => (
+                        <Spread
+                            key={collection.uid}
+                            actions={actions}
+                            collection={collection}
+                        />
+                    ),
+                    spreads
+                )}
+                <CreateCollectionDialog
+                    actions={actions}
+                    createExpanded={true}
+                />
+            </Stack>
+        </Container>
     )
 }

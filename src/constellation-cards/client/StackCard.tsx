@@ -22,7 +22,7 @@ export default ({
         <ListItem button>
             <ListItemText inset primary={card.name} />
             <ListItemSecondaryAction>
-                <Tooltip title="Deal this specific card">
+                <Tooltip title="Deal this specific card" placement="right">
                     <IconButton edge="end" aria-label="deal" onClick={onClickPickCard}>
                         <NavigateNextIcon />
                     </IconButton>

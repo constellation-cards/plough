@@ -41,7 +41,7 @@ export default ({
                     ),
                     cards
                 )}
-                {(cards.length > 0) ? <React.Fragment /> : <em>No cards in this spread</em>}
+                {(cards.length > 0) ? <React.Fragment /> : <em>No cards in this spread. Click "All Cards" to add cards to it.</em>}
             </Grid>
         </>
     )
