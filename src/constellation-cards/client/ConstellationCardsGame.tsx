@@ -25,9 +25,10 @@ export interface RoomActions {
     discardCardAction: (card: Card) => void
     flipCardAction: (card: Card) => void
     createCollectionAction: (name: string, expanded: boolean) => void
+    setActiveCollection: (activeCollection: CardCollection) => void
 }
 
-const createActions = (room: Room): RoomActions => ({
+const createActions = (room: Room, setActiveCollection: (activeCollection: CardCollection) => void): RoomActions => ({
     moveCardAction: (card: Card, dest: CardCollection) => {
         const data: MoveCardAction = {
             cardUid: card.uid,
@@ -55,6 +56,7 @@ const createActions = (room: Room): RoomActions => ({
         }
         room.send(CardActionNames.CREATE_COLLECTION, data)
     },
+    setActiveCollection
 })
 
 const sortWithRules = [ascend(prop("name"))]
@@ -90,7 +92,9 @@ export default ({ room }: ConstellationCardsGameProps) => {
 
     const [spreads, stacks] = gameCollectionList(gameState?.collections)
 
-    const actions = createActions(room)
+    const [activeCollection, setActiveCollection] = useState(spreads[0])
+
+    const actions = createActions(room, setActiveCollection)
 
     const onClickOpenDrawer = (_event: any) => setDrawerOpen(true)
     const onCloseDrawer = (_event: any) => setDrawerOpen(false)
@@ -105,7 +109,7 @@ export default ({ room }: ConstellationCardsGameProps) => {
             <Drawer anchor="left" open={isDrawerOpen} onClose={onCloseDrawer}>
                 <Stacks
                     collections={stacks}
-                    activeCollection={spreads[0]}
+                    activeCollection={activeCollection}
                     actions={actions}
                 />
             </Drawer>
@@ -114,8 +118,9 @@ export default ({ room }: ConstellationCardsGameProps) => {
                     (collection: CardCollection) => (
                         <Spread
                             key={collection.uid}
-                            actions={actions}
                             collection={collection}
+                            isActiveCollection={collection === (activeCollection || spreads[0])}
+                            actions={actions}
                         />
                     ),
                     spreads
