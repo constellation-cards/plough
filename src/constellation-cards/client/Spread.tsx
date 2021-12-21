@@ -1,4 +1,5 @@
 import AutoAwesomeMotionIcon from "@mui/icons-material/AutoAwesomeMotion"
+import Box from "@mui/material/Box"
 import Grid from "@mui/material/Grid"
 import Typography from "@mui/material/Typography"
 import { map } from "ramda"
@@ -20,18 +21,29 @@ export default ({
     actions,
 }: CollapsedCollectionProps) => {
     return (
-        <>
-            <Typography variant="body1" component="strong">
-                <AutoAwesomeMotionIcon />
-                <span />
-                {name}
-            </Typography>
+        <Box sx={{m: 1}}>
             <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <Box
+                        sx={{
+                            p: 1,
+                            backgroundColor: "primary.dark",
+                        }}
+                    >
+                        <Typography variant="h6" sx={{
+                            color: "white"
+                        }}>{name}</Typography>
+                    </Box>
+                </Grid>
                 {map(
                     (card: Card) => (
-                        <Grid item xs={4} style={{
-                            "minWidth": "4.1in"
-                        }}>
+                        <Grid
+                            item
+                            xs={4}
+                            style={{
+                                minWidth: "4in",
+                            }}
+                        >
                             <SpreadCard
                                 key={card.uid}
                                 actions={actions}
@@ -41,8 +53,15 @@ export default ({
                     ),
                     cards
                 )}
-                {(cards.length > 0) ? <React.Fragment /> : <em>No cards in this spread. Click "All Cards" to add cards to it.</em>}
+                {cards.length > 0 ? (
+                    <React.Fragment />
+                ) : (
+                    <em>
+                        No cards in this spread. Click "All Cards" to add cards
+                        to it.
+                    </em>
+                )}
             </Grid>
-        </>
+        </Box>
     )
 }

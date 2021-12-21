@@ -1,4 +1,5 @@
-import Grid from "@mui/material/Grid"
+import { Typography } from "@mui/material"
+import Box from "@mui/material/Box"
 import Paper from "@mui/material/Paper"
 import { map } from "ramda"
 import React from "react"
@@ -7,14 +8,14 @@ import { Card } from "./state/Card"
 
 interface CardFaceProps {
     card: Card
-    isFlipped?: boolean | undefined;
+    isFlipped?: boolean | undefined
     children?: React.ReactNode
 }
 
 function formatDesc(line: string) {
     const trimmed = line.trim()
     if (trimmed.startsWith("//")) {
-        return <i>{trimmed.substr(2)}</i>
+        return <em>{trimmed.substring(2)}</em>
     } else {
         return trimmed
     }
@@ -27,9 +28,13 @@ function formatDesc(line: string) {
  *
  * This is meant both for expanded collections and card mouseover/preview mode.
  */
-export default ({ card: { front, back, flipped }, isFlipped, children }: CardFaceProps) => {
+export default ({
+    card: { front, back, flipped },
+    isFlipped,
+    children,
+}: CardFaceProps) => {
     if (isFlipped === undefined) {
-        isFlipped = flipped;
+        isFlipped = flipped
     }
     const name = flipped ? back.name : front.name
     const desc = flipped ? back.description : front.description
@@ -42,24 +47,16 @@ export default ({ card: { front, back, flipped }, isFlipped, children }: CardFac
                 padding: "1em",
             }}
         >
-            <Grid container direction="column" justifyContent="flex-start" alignItems="flex-start">
-                <Grid item xs={12}>
-                    {children}
-                </Grid>
-                <Grid item xs={12}>
-                    <strong>
-                        <u>{name}</u>
-                    </strong>
-                </Grid>
-                <Grid item xs={12}>
-                    {map(
-                        (s) => (
-                            <p>{formatDesc(s)}</p>
-                        ),
-                        (desc || "").split("\n")
-                    )}
-                </Grid>
-            </Grid>
+            {children}
+            <Box sx={{ textAlign: "center", width: "100%" }}>
+                <Typography fontSize="h6.fontSize" fontWeight="bold" sx={{borderBottom: 1}}>{name}</Typography>
+            </Box>
+            {map(
+                (s) => (
+                    <>{formatDesc(s)}<br /></>
+                ),
+                (desc || "").split("\n")
+            )}
         </Paper>
     )
 }
