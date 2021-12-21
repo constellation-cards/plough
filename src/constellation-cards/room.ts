@@ -147,6 +147,8 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
             collection.expanded = data.expanded
 
             this.state.collections.set(collection.uid, collection)
+
+            this.broadcast("announcement", `A new ${data.expanded ? 'spread' : 'stack'} named '${data.name} was created`)
         })
 
         this.onMessage(CardActionNames.DELETE_COLLECTION, (_client, data: DeleteCollectionAction) => {
@@ -159,6 +161,8 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
                 // Remove the collection
                 this.state.collections.delete(data.uid)
                 // TODO: delete any cards that were still found in this collection, as it might be some cards' home
+
+                //this.broadcast("announcement", `A new ${data.expanded ? 'spread' : 'stack'} named '${data.name} was created`)
             } else {
                 console.error(`Wanted to delete collection with invalid UID: ${data.uid}`)
             }
@@ -168,6 +172,9 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
             const card: Card = this.state.cards.get(data.cardUid)
             if (card) {
                 this.moveCard(card, data.dest)
+
+                // TODO: name the collection
+                this.broadcast("announcement", `${card.name} was moved to a new collection`)
             }
         })
 
@@ -175,6 +182,8 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
             const card: Card = this.state.cards.get(data.cardUid)
             if (card) {
                 card.flipped = !card.flipped
+
+                this.broadcast("announcement", `${card.name} was flipped to its ${card.flipped ? 'front' : 'back'} side`)
             }
         })
 

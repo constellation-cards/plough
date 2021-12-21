@@ -83,6 +83,9 @@ export default ({ room }: ConstellationCardsGameProps) => {
         room.onStateChange((newState) => {
             setGameState(Object.assign({}, newState))
         })
+
+        // TODO: send a toast
+        room.onMessage("announcement", (message: any) => console.log(message))
     }, [room])
 
     const [spreads, stacks] = gameCollectionList(gameState?.collections)

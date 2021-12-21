@@ -43,9 +43,9 @@ export default ({
                             style={{
                                 minWidth: "4in",
                             }}
+                            key={card.uid}
                         >
                             <SpreadCard
-                                key={card.uid}
                                 actions={actions}
                                 card={card}
                             />
