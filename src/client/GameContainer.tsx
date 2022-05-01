@@ -3,14 +3,19 @@ import React, { useEffect, useState } from "react"
 import ConstellationCardsGame from "../constellation-cards/client/ConstellationCardsGame"
 import { connect } from "./connection"
 
-export default (_props: object) => {
+interface GameContainerProps {
+    roomName: string
+    children?: React.ReactNode
+}
+
+export default (props: GameContainerProps) => {
     const [room, setRoom] = useState(null)
     const [error, setError] = useState(null)
 
     useEffect(() => {
         async function connectToGame() {
             console.log("Connecting")
-            connect(setRoom, setError)
+            connect(props.roomName, setRoom, setError)
         }
         connectToGame()
     }, [])

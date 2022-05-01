@@ -3,6 +3,7 @@ import express, { Request, Response } from "express"
 import { createServer } from "http"
 import path from "path"
 
+import { ConstellationCardsRoomName } from "../constellation-cards/constants"
 import { ConstellationCardsRoom } from "../constellation-cards/room"
 
 const port = Number(process.env.port) || 3000
@@ -23,7 +24,7 @@ const gameServer = new Server({
     server: createServer(app),
 })
 
-gameServer.define("constellation-cards", ConstellationCardsRoom)
+gameServer.define(ConstellationCardsRoomName, ConstellationCardsRoom)
 
 gameServer.listen(port)
 console.log(`Listening on ws://localhost:${port}`)

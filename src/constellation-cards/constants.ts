@@ -1,3 +1,5 @@
+export const ConstellationCardsRoomName = "constellation-cards";
+
 export enum CardActionNames {
     UPSERT_CARD = "upsert-card",
     CREATE_COLLECTION = "create-collection",

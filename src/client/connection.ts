@@ -1,12 +1,15 @@
-import { Client, Room } from "colyseus.js"
+import { Client } from "colyseus.js"
 
-const client = new Client(process.env.ROOM_URL)
+var webSocketUri = new URL('/', window.location.href);
+webSocketUri.protocol = webSocketUri.protocol.replace('http', 'ws')
 
-export async function connect(setRoom: any, setError: any): Promise<void> {
+const client = new Client(webSocketUri.href)
+
+export async function connect(roomName: string, setRoom: any, setError: any): Promise<void> {
     try {
-        const room = await client.joinOrCreate(process.env.ROOM_NAME)
+        const room = await client.joinOrCreate(roomName)
         setRoom(room)
-        room.onLeave(code => setRoom(null))
+        room.onLeave(_code => setRoom(null))
     } catch (e) {
         console.error(e)
         setError(e)

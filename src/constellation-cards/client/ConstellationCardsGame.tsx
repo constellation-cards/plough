@@ -109,7 +109,7 @@ export default ({ room }: ConstellationCardsGameProps) => {
             <Drawer anchor="left" open={isDrawerOpen} onClose={onCloseDrawer}>
                 <Stacks
                     collections={stacks}
-                    activeCollection={activeCollection}
+                    activeCollection={(activeCollection || spreads[0])}
                     actions={actions}
                 />
             </Drawer>
