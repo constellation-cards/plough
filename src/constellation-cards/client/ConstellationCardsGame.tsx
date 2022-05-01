@@ -100,7 +100,7 @@ export default ({ room }: ConstellationCardsGameProps) => {
     const onCloseDrawer = (_event: any) => setDrawerOpen(false)
 
     return (
-        <Container>
+        <Container maxWidth="xl" disableGutters={false} >
             <AppBar position="static">
                 <Toolbar>
                     <Button color="inherit" onClick={onClickOpenDrawer}>All Cards</Button>
