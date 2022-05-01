@@ -9,6 +9,7 @@ import { Card } from "./state/Card"
 interface CardFaceProps {
     card: Card
     isFlipped?: boolean | undefined
+    onClick?: any
     children?: React.ReactNode
 }
 
@@ -31,6 +32,7 @@ function formatDesc(line: string) {
 export default ({
     card: { front, back, flipped },
     isFlipped,
+    onClick,
     children,
 }: CardFaceProps) => {
     if (isFlipped === undefined) {
@@ -46,6 +48,7 @@ export default ({
                 minHeight: "6in",
                 padding: "1em",
             }}
+            onClick={onClick}
         >
             {children}
             <Box sx={{ textAlign: "center", width: "100%" }}>
