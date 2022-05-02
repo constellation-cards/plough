@@ -104,7 +104,6 @@ export default ({ room }: ConstellationCardsGameProps) => {
 
     const [activeCollection, setActiveCollection] = useState(spreads[0])
 
-    const onClickOpenDrawer = (_event: any) => setDrawerOpen(true)
     const onCloseDrawer = (_event: any) => setDrawerOpen(false)
 
     const actions = createActions(room, setActiveCollection, setDrawerOpen)
@@ -113,7 +112,9 @@ export default ({ room }: ConstellationCardsGameProps) => {
         <Container maxWidth="xl" disableGutters={false} >
             <AppBar position="static">
                 <Toolbar>
-                    <Button color="inherit" onClick={onClickOpenDrawer}>All Cards</Button>
+                    <Button color="inherit" component={'a'} href="https://constellation.cards/" target="_blank">
+                        Constellation Cards
+                    </Button>
                 </Toolbar>
             </AppBar>
             <Drawer anchor="left" open={isDrawerOpen} onClose={onCloseDrawer}>

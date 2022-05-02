@@ -43,6 +43,7 @@ export default ({
     const toggleExpanded = (_event: any) => setIsExpanded(!isExpanded)
 
     const onClickAddCard = (_event: any) => {
+        setAnchorEl(null)
         actions.setActiveCollection(collection)
         actions.setDrawerOpen(true)
     }
