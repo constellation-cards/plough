@@ -25,10 +25,12 @@ export interface RoomActions {
     discardCardAction: (card: Card) => void
     flipCardAction: (card: Card) => void
     createCollectionAction: (name: string, expanded: boolean) => void
+    deleteCollectionAction: (collection: CardCollection) => void
     setActiveCollection: (activeCollection: CardCollection) => void
+    setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const createActions = (room: Room, setActiveCollection: (activeCollection: CardCollection) => void): RoomActions => ({
+const createActions = (room: Room, setActiveCollection: (activeCollection: CardCollection) => void, setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>): RoomActions => ({
     moveCardAction: (card: Card, dest: CardCollection) => {
         const data: MoveCardAction = {
             cardUid: card.uid,
@@ -56,7 +58,15 @@ const createActions = (room: Room, setActiveCollection: (activeCollection: CardC
         }
         room.send(CardActionNames.CREATE_COLLECTION, data)
     },
-    setActiveCollection
+    deleteCollectionAction: (collection: CardCollection) => {
+        const data: DeleteCollectionAction = {
+            uid: collection.uid
+        }
+        room.send(CardActionNames.DELETE_COLLECTION, data)
+    },
+    // TODO: delete collection action
+    setActiveCollection,
+    setDrawerOpen
 })
 
 const sortWithRules = [ascend(prop("name"))]
@@ -94,10 +104,10 @@ export default ({ room }: ConstellationCardsGameProps) => {
 
     const [activeCollection, setActiveCollection] = useState(spreads[0])
 
-    const actions = createActions(room, setActiveCollection)
-
     const onClickOpenDrawer = (_event: any) => setDrawerOpen(true)
     const onCloseDrawer = (_event: any) => setDrawerOpen(false)
+
+    const actions = createActions(room, setActiveCollection, setDrawerOpen)
 
     return (
         <Container maxWidth="xl" disableGutters={false} >
@@ -119,7 +129,6 @@ export default ({ room }: ConstellationCardsGameProps) => {
                         <Spread
                             key={collection.uid}
                             collection={collection}
-                            isActiveCollection={collection === (activeCollection || spreads[0])}
                             actions={actions}
                         />
                     ),

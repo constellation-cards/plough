@@ -148,6 +148,8 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
 
             this.state.collections.set(collection.uid, collection)
 
+            // TODO: if we're creating a Character or Encounter collection, add cards
+
             this.broadcast("announcement", `A new ${data.expanded ? 'spread' : 'stack'} named '${data.name} was created`)
         })
 
@@ -162,7 +164,7 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
                 this.state.collections.delete(data.uid)
                 // TODO: delete any cards that were still found in this collection, as it might be some cards' home
 
-                //this.broadcast("announcement", `A new ${data.expanded ? 'spread' : 'stack'} named '${data.name} was created`)
+                this.broadcast("announcement", `A ${collection.expanded ? 'spread' : 'stack'} named '${collection.name} was deleted`)
             } else {
                 console.error(`Wanted to delete collection with invalid UID: ${data.uid}`)
             }
