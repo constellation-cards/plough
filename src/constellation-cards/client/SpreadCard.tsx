@@ -13,6 +13,7 @@ import { Card } from "./state/Card"
 
 interface ExpandedCardProps {
     card: Card
+    isExpanded: boolean
     actions: RoomActions
     children?: React.ReactNode
 }
@@ -21,7 +22,7 @@ interface ExpandedCardProps {
  * A card held in a container, showing both the actual card
  * and actions you can take (e.g. return to stack, flip)
  */
-export default ({ card, actions }: ExpandedCardProps) => {
+export default ({ card, isExpanded, actions }: ExpandedCardProps) => {
     const onClickDiscardCard = (_event: any) => actions.discardCardAction(card)
     const onClickFlipCard = (_event: any) => actions.flipCardAction(card)
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -45,8 +46,8 @@ export default ({ card, actions }: ExpandedCardProps) => {
                 isFlipped={card.flipped}
                 flipDirection="horizontal"
             >
-                <CardFace key={"front"} card={card} isFlipped={false} onClick={handleClick} />
-                <CardFace key={"back"} card={card} isFlipped={true} onClick={handleClick} />
+                <CardFace key={"front"} card={card} isExpanded={isExpanded} isFlipped={false} onClick={handleClick} />
+                <CardFace key={"back"} card={card} isExpanded={isExpanded} isFlipped={true} onClick={handleClick} />
             </ReactCardFlip>
             <Popover
                 open={open}

@@ -1,4 +1,6 @@
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
+import ArrowRightIcon from "@mui/icons-material/ArrowRight"
 import ClearIcon from "@mui/icons-material/Clear"
 import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
@@ -21,10 +23,7 @@ interface CollapsedCollectionProps {
     children?: React.ReactNode
 }
 
-export default ({
-    collection,
-    actions,
-}: CollapsedCollectionProps) => {
+export default ({ collection, actions }: CollapsedCollectionProps) => {
     const [isExpanded, setIsExpanded] = useState(true)
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
         null
@@ -54,8 +53,6 @@ export default ({
         }
     }
 
-    // TODO: re-add actions to toggle expansion
-
     return (
         <>
             <Box sx={{ m: 1, border: 2, boxShadow: "4px 4px" }}>
@@ -70,33 +67,32 @@ export default ({
                     </Typography>
                 </Box>
                 <Grid container spacing={2}>
-                    {isExpanded
-                        ? map(
-                              (card: Card) => (
-                                  <Grid
-                                      item
-                                      xs={4}
-                                      style={{
-                                          minWidth: "4in",
-                                      }}
-                                      key={card.uid}
-                                  >
-                                      <SpreadCard
-                                          actions={actions}
-                                          card={card}
-                                      />
-                                  </Grid>
-                              ),
-                              collection.cards
-                          )
-                        : null}
+                    {map(
+                        (card: Card) => (
+                            <Grid
+                                item
+                                xs={4}
+                                style={{
+                                    minWidth: "4in",
+                                }}
+                                key={card.uid}
+                            >
+                                <SpreadCard
+                                    card={card}
+                                    isExpanded={isExpanded}
+                                    actions={actions}
+                                />
+                            </Grid>
+                        ),
+                        collection.cards
+                    )}
                     {collection.cards.length > 0 ? (
                         <React.Fragment />
                     ) : (
                         <Grid item xs={12}>
                             <em>
-                                Click "{collection.name}" in the header,
-                                then click "All Cards", to add cards.
+                                Click "{collection.name}" in the header, then
+                                click "All Cards", to add cards.
                             </em>
                         </Grid>
                     )}
@@ -125,6 +121,22 @@ export default ({
                                 onClick={onClickAddCard}
                             >
                                 Add Card
+                            </Button>
+                        </Tooltip>
+                        <Tooltip title="Expand or collapse this spread">
+                            <Button
+                                variant="contained"
+                                aria-label="expand-collapse"
+                                startIcon={
+                                    isExpanded ? (
+                                        <ArrowDropDownIcon />
+                                    ) : (
+                                        <ArrowRightIcon />
+                                    )
+                                }
+                                onClick={toggleExpanded}
+                            >
+                                {isExpanded ? "Collapse" : "Expand"}
                             </Button>
                         </Tooltip>
                         <Tooltip title="Delete this spread">

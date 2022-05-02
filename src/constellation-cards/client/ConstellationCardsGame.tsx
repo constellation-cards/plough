@@ -64,7 +64,6 @@ const createActions = (room: Room, setActiveCollection: (activeCollection: CardC
         }
         room.send(CardActionNames.DELETE_COLLECTION, data)
     },
-    // TODO: delete collection action
     setActiveCollection,
     setDrawerOpen
 })

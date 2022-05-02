@@ -8,6 +8,7 @@ import { Card } from "./state/Card"
 
 interface CardFaceProps {
     card: Card
+    isExpanded?: boolean | undefined
     isFlipped?: boolean | undefined
     onClick?: any
     children?: React.ReactNode
@@ -31,6 +32,7 @@ function formatDesc(line: string) {
  */
 export default ({
     card: { front, back, flipped },
+    isExpanded,
     isFlipped,
     onClick,
     children,
@@ -45,21 +47,22 @@ export default ({
         <Paper
             style={{
                 width: "4in",
-                minHeight: "6in",
+                minHeight: (isExpanded ? "6in" : "inherit"),
                 padding: "1em",
             }}
             onClick={onClick}
         >
             {children}
             <Box sx={{ textAlign: "center", width: "100%" }}>
-                <Typography fontSize="h6.fontSize" fontWeight="bold" sx={{borderBottom: 1}}>{name}</Typography>
+                <Typography fontSize="h6.fontSize" fontWeight="bold" sx={{borderBottom: (isExpanded ? 1 : "inherit")}}>{name}</Typography>
             </Box>
-            {map(
+            {isExpanded ?
+            map(
                 (s) => (
                     <>{formatDesc(s)}<br /></>
                 ),
                 (desc || "").split("\n")
-            )}
+            ) : <React.Fragment />}
         </Paper>
     )
 }
