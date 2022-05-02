@@ -2,6 +2,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import ArrowRightIcon from "@mui/icons-material/ArrowRight"
 import ClearIcon from "@mui/icons-material/Clear"
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
 import ButtonGroup from "@mui/material/ButtonGroup"
@@ -39,7 +40,7 @@ export default ({ collection, actions }: CollapsedCollectionProps) => {
 
     const open = Boolean(anchorEl)
 
-    const toggleExpanded = (_event: any) => setIsExpanded(!isExpanded)
+    const onClickToggleExpanded = (_event: any) => setIsExpanded(!isExpanded)
 
     const onClickAddCard = (_event: any) => {
         setAnchorEl(null)
@@ -47,8 +48,17 @@ export default ({ collection, actions }: CollapsedCollectionProps) => {
         actions.setDrawerOpen(true)
     }
 
+    const onClickRenameSpread = (_event: any) => {
+        setAnchorEl(null)
+        const newName = prompt("Enter a new name for this spread", collection.name)
+        if (newName) {
+            actions.renameCollectionAction(collection, newName)
+        }
+    }
+
     const onClickDeleteSpread = (_event: any) => {
-        if (confirm("Are you sure you want to delete this spread?")) {
+        setAnchorEl(null)
+        if (confirm(`Are you sure you want to delete '${collection.name}'?`)) {
             actions.deleteCollectionAction(collection)
         }
     }
@@ -134,9 +144,19 @@ export default ({ collection, actions }: CollapsedCollectionProps) => {
                                         <ArrowRightIcon />
                                     )
                                 }
-                                onClick={toggleExpanded}
+                                onClick={onClickToggleExpanded}
                             >
                                 {isExpanded ? "Collapse" : "Expand"}
+                            </Button>
+                        </Tooltip>
+                        <Tooltip title="Rename this spread">
+                            <Button
+                                variant="contained"
+                                aria-label="rename"
+                                startIcon={<DriveFileRenameOutlineIcon />}
+                                onClick={onClickRenameSpread}
+                            >
+                                Rename
                             </Button>
                         </Tooltip>
                         <Tooltip title="Delete this spread">

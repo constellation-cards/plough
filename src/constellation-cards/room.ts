@@ -34,6 +34,11 @@ export interface DeleteCollectionAction {
     uid: Uid;
 }
 
+export interface RenameCollectionAction {
+    uid: Uid;
+    name: string;
+}
+
 export interface MoveCardAction {
     cardUid: Uid;
     dest: Uid;
@@ -167,6 +172,16 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
                 this.broadcast("announcement", `A ${collection.expanded ? 'spread' : 'stack'} named '${collection.name} was deleted`)
             } else {
                 console.error(`Wanted to delete collection with invalid UID: ${data.uid}`)
+            }
+        })
+
+        this.onMessage(CardActionNames.RENAME_COLLECTION, (_client, data: RenameCollectionAction) => {
+            const collection = this.state.collections.get(data.uid)
+            if (collection) {
+                const oldName = `${collection.name}`
+                collection.name = data.name
+
+                this.broadcast("announcement", `The collection '${oldName}' has been renamed to '${collection.name}'`)
             }
         })
 

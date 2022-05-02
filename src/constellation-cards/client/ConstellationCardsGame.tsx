@@ -7,7 +7,7 @@ import { ascend, map, partition, prop, sortWith } from "ramda"
 import React, { useEffect, useState } from "react"
 
 import { CardActionNames } from "../constants"
-import { CreateCollectionAction, DeleteCollectionAction, FlipCardAction, MoveCardAction, UpsertCardAction } from "../room"
+import { CreateCollectionAction, DeleteCollectionAction, FlipCardAction, MoveCardAction, RenameCollectionAction, UpsertCardAction } from "../room"
 import CreateCollectionDialog from "./CreateCollectionDialog"
 import Spread from "./Spread"
 import Stacks from "./Stacks"
@@ -26,6 +26,7 @@ export interface RoomActions {
     flipCardAction: (card: Card) => void
     createCollectionAction: (name: string, expanded: boolean) => void
     deleteCollectionAction: (collection: CardCollection) => void
+    renameCollectionAction: (collection: CardCollection, name: string) => void
     setActiveCollection: (activeCollection: CardCollection) => void
     setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -63,6 +64,13 @@ const createActions = (room: Room, setActiveCollection: (activeCollection: CardC
             uid: collection.uid
         }
         room.send(CardActionNames.DELETE_COLLECTION, data)
+    },
+    renameCollectionAction: (collection: CardCollection, name: string) => {
+        const data: RenameCollectionAction = {
+            uid: collection.uid,
+            name
+        }
+        room.send(CardActionNames.RENAME_COLLECTION, data)
     },
     setActiveCollection,
     setDrawerOpen
