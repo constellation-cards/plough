@@ -16,10 +16,11 @@ interface CollapsedCardProps {
 export default ({
     card, activeCollection, actions
 }: CollapsedCardProps) => {
+    const onClickPreview = (_event: any) => actions.setPreviewCard(card)
     const onClickPickCard = (_event: any) => actions.moveCardAction(card, activeCollection)
 
     return (
-        <ListItem button>
+        <ListItem button onClick={onClickPreview}>
             <ListItemText inset primary={card.name} />
             <ListItemSecondaryAction>
                 <Tooltip title="Deal this specific card" placement="right">

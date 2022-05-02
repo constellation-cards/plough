@@ -9,6 +9,7 @@ import React, { useEffect, useState } from "react"
 import { CardActionNames } from "../constants"
 import { CreateCollectionAction, DeleteCollectionAction, FlipCardAction, MoveCardAction, RenameCollectionAction, UpsertCardAction } from "../room"
 import CreateCollectionDialog from "./CreateCollectionDialog"
+import PreviewCardModal from "./PreviewCardModal"
 import Spread from "./Spread"
 import Stacks from "./Stacks"
 import { Card } from "./state/Card"
@@ -29,9 +30,13 @@ export interface RoomActions {
     renameCollectionAction: (collection: CardCollection, name: string) => void
     setActiveCollection: (activeCollection: CardCollection) => void
     setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setPreviewCard: React.Dispatch<React.SetStateAction<Card>>
 }
 
-const createActions = (room: Room, setActiveCollection: (activeCollection: CardCollection) => void, setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>): RoomActions => ({
+const createActions = (
+    room: Room, setActiveCollection: (activeCollection: CardCollection) => void,
+    setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    setPreviewCard: React.Dispatch<React.SetStateAction<Card>>): RoomActions => ({
     moveCardAction: (card: Card, dest: CardCollection) => {
         const data: MoveCardAction = {
             cardUid: card.uid,
@@ -73,7 +78,8 @@ const createActions = (room: Room, setActiveCollection: (activeCollection: CardC
         room.send(CardActionNames.RENAME_COLLECTION, data)
     },
     setActiveCollection,
-    setDrawerOpen
+    setDrawerOpen,
+    setPreviewCard
 })
 
 const sortWithRules = [ascend(prop("name"))]
@@ -96,6 +102,7 @@ const gameCollectionList = (
 export default ({ room }: ConstellationCardsGameProps) => {
     const [gameState, setGameState] = useState<ConstellationCardsState>(null)
     const [isDrawerOpen, setDrawerOpen] = useState(false)
+    const [previewCard, setPreviewCard] = useState<Card | null>(null)
 
     useEffect(() => {
         console.log("Registering onStateChange event with room")
@@ -113,7 +120,7 @@ export default ({ room }: ConstellationCardsGameProps) => {
 
     const onCloseDrawer = (_event: any) => setDrawerOpen(false)
 
-    const actions = createActions(room, setActiveCollection, setDrawerOpen)
+    const actions = createActions(room, setActiveCollection, setDrawerOpen, setPreviewCard)
 
     return (
         <Container maxWidth="xl" disableGutters={false} >
@@ -145,6 +152,10 @@ export default ({ room }: ConstellationCardsGameProps) => {
                 <CreateCollectionDialog
                     actions={actions}
                     createExpanded={true}
+                />
+                <PreviewCardModal
+                    previewCard={previewCard}
+                    setPreviewCard={setPreviewCard}
                 />
             </Stack>
         </Container>

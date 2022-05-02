@@ -40,8 +40,8 @@ export default ({
     if (isFlipped === undefined) {
         isFlipped = flipped
     }
-    const name = flipped ? back.name : front.name
-    const desc = flipped ? back.description : front.description
+    const name = isFlipped ? back.name : front.name
+    const desc = isFlipped ? back.description : front.description
 
     return (
         <Paper
