@@ -24,6 +24,24 @@ interface State {
   collections: Record<string,Collection>
 }
 
+// When dealing cards into this preset, should we flip them?
+export enum PresetFlipRule {
+  NO,
+  YES,
+  RANDOM
+}
+
+interface PresetCollection {
+  collectionUid: string;
+  flipRule: PresetFlipRule;
+}
+
+interface Preset {
+  name: string;
+  description: string;
+  collections: PresetCollection[];
+}
+
 export const defaultState: State = {
   "cards": [
     {
@@ -1365,3 +1383,73 @@ export const defaultState: State = {
     }
   }
 }
+
+export const presets: Preset[] = [
+  {
+    name: "Create Spread",
+    description: "Create a new empty spread for cards",
+    collections: []
+  },
+  {
+    name: "Create Character",
+    description: "Create a new player character with an Upbringing, a Role, and a Focus",
+    collections: [
+      {
+        collectionUid: "cb7b37050fb00475eed11d3f943f3af7",
+        flipRule: PresetFlipRule.NO
+      },
+      {
+        collectionUid: "4e787313e1b02b79c6d4a079b5b42258",
+        flipRule: PresetFlipRule.NO
+      },
+      {
+        collectionUid: "0e5fccedcc5c38bd60a22dfd08afbf76",
+        flipRule: PresetFlipRule.NO
+      }
+    ]
+  },
+  {
+    name: "Create Encounter",
+    description: "Create a new encounter with two Encounter cards and one Emotion",
+    collections: [
+      {
+        collectionUid: "9c554a0573c474b0c94434978d6f2eaa",
+        flipRule: PresetFlipRule.NO
+      },
+      {
+        collectionUid: "9c554a0573c474b0c94434978d6f2eaa",
+        flipRule: PresetFlipRule.NO
+      },
+      {
+        collectionUid: "b76a07b1171d4a8c8cdd36fb5eee43aa",
+        flipRule: PresetFlipRule.YES
+      }
+    ]
+  },
+  {
+    name: "Create City",
+    description: "Create a new city out of three Neighborhoods and two Dynamics connecting them",
+    collections: [
+      {
+        collectionUid: "c5332c9ac49898fb30f6c6d445ec308e",
+        flipRule: PresetFlipRule.RANDOM
+      },
+      {
+        collectionUid: "f16ac12c8e027c84f01ddf8f20be4bc9",
+        flipRule: PresetFlipRule.RANDOM
+      },
+      {
+        collectionUid: "c5332c9ac49898fb30f6c6d445ec308e",
+        flipRule: PresetFlipRule.RANDOM
+      },
+      {
+        collectionUid: "f16ac12c8e027c84f01ddf8f20be4bc9",
+        flipRule: PresetFlipRule.RANDOM
+      },
+      {
+        collectionUid: "c5332c9ac49898fb30f6c6d445ec308e",
+        flipRule: PresetFlipRule.RANDOM
+      }
+    ]
+  }
+]

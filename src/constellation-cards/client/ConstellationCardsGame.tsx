@@ -25,7 +25,7 @@ export interface RoomActions {
     moveCardAction: (card: Card, dest: CardCollection) => void
     discardCardAction: (card: Card) => void
     flipCardAction: (card: Card) => void
-    createCollectionAction: (name: string, expanded: boolean) => void
+    createCollectionAction: (name: string, preset: string, expanded: boolean) => void
     deleteCollectionAction: (collection: CardCollection) => void
     renameCollectionAction: (collection: CardCollection, name: string) => void
     setActiveCollection: (activeCollection: CardCollection) => void
@@ -57,9 +57,10 @@ const createActions = (
         }
         room.send(CardActionNames.FLIP_CARD, data)
     },
-    createCollectionAction: (name: string, expanded: boolean) => {
+    createCollectionAction: (name: string, preset: string = "", expanded: boolean) => {
         const data: CreateCollectionAction = {
             name,
+            preset,
             expanded,
         }
         room.send(CardActionNames.CREATE_COLLECTION, data)

@@ -3,7 +3,7 @@ import { Room } from "colyseus"
 import { randomBytes } from "crypto"
 import { map, mapObjIndexed } from "ramda"
 
-import { defaultState } from "./default-state"
+import { defaultState, presets, PresetFlipRule } from "./default-state"
 import { Card, CardCollection, CardFace, ConstellationCardsState, Uid } from "./state"
 
 function generateUid() {
@@ -27,6 +27,7 @@ export interface UpsertCardAction {
 
 export interface CreateCollectionAction {
     name: string;
+    preset: string;
     expanded: boolean;
 }
 
@@ -153,7 +154,30 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
 
             this.state.collections.set(collection.uid, collection)
 
-            // TODO: if we're creating a Character or Encounter collection, add cards
+            for (let preset of presets) {
+                if (preset.name === data.preset) {
+                    for (let data of preset.collections) {
+                        const presetCollection = this.state.collections.get(data.collectionUid)
+                        if (presetCollection) {
+                            if (presetCollection.cards.length > 0) {
+                                const randomCard = presetCollection.cards[Math.floor(Math.random() * presetCollection.cards.length)];
+                                this.moveCard(randomCard, collection.uid)
+                                switch (data.flipRule) {
+                                    case PresetFlipRule.NO:
+                                        randomCard.flipped = false;
+                                        break;
+                                    case PresetFlipRule.YES:
+                                        randomCard.flipped = true;
+                                        break;
+                                    case PresetFlipRule.RANDOM:
+                                        randomCard.flipped = (Math.random() >= 0.5) ? true : false;
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
             this.broadcast("announcement", `A new ${data.expanded ? 'spread' : 'stack'} named '${data.name} was created`)
         })
