@@ -10,26 +10,26 @@ interface GameContainerProps {
     children?: React.ReactNode
 }
 
-export default (props: GameContainerProps) => {
+export default ({roomName}: GameContainerProps) => {
     const [room, setRoom] = useState<Room<any>>(null)
     const [error, setError] = useState(null)
     const { gameId } = useParams()
     const navigate = useNavigate()
 
-    useEffect(() => {
-        async function connectToGame() {
-            console.log("Connecting")
-            await connect(props.roomName, gameId, setRoom, setError)
+    async function connectToGame() {
+        console.log("Connecting")
+        const newGameId = await connect(roomName, gameId, setRoom, setError)
+        
+        if (newGameId) {
+            navigate(`/game/${newGameId}`)
         }
-        connectToGame()
-    }, [])
+    }
 
     useEffect(() => {
-        if (room) {
-            console.log("Pushing state")
-            navigate(`/game/${gameId}`)    
+        if (!room && !error) {
+            connectToGame()
         }
-    }, [room])
+    }, [room, error])
 
     return (
         <div>

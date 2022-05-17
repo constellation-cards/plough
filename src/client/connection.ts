@@ -5,7 +5,7 @@ webSocketUri.protocol = webSocketUri.protocol.replace('http', 'ws')
 
 const client = new Client(webSocketUri.href)
 
-export async function connect(roomName: string, gameId: string | undefined | null, setRoom: any, setError: any): Promise<void> {
+export async function connect(roomName: string, gameId: string | undefined | null, setRoom: any, setError: any): Promise<string> {
     try {
         // Find a room to join
         var roomId: string = null
@@ -13,9 +13,9 @@ export async function connect(roomName: string, gameId: string | undefined | nul
 
         if (gameId) {
             const rooms = await client.getAvailableRooms(roomName)
-            rooms.forEach((room) => {
-                if (room.metadata.gameId === gameId) {
-                    roomId = room.roomId
+            rooms.forEach((candidate) => {
+                if (candidate.metadata.gameId === gameId) {
+                    roomId = candidate.roomId
                 }
             });
         }
@@ -27,9 +27,22 @@ export async function connect(roomName: string, gameId: string | undefined | nul
         }
 
         setRoom(room)
+        setError(null)
         room.onLeave(_code => setRoom(null))
+
+        if (!gameId) {
+            const rooms = await client.getAvailableRooms(roomName)
+            rooms.forEach((candidate) => {
+                if (candidate.roomId === room.id) {
+                    gameId = candidate.metadata.gameId
+                }
+            });
+        }
+
+        return gameId
     } catch (e) {
         console.error(e)
         setError(e)
+        return null
     }
 }
