@@ -5,6 +5,8 @@ import { map, mapObjIndexed } from "ramda"
 import { defaultState, PresetFlipRule, presets } from "./default-state"
 import { Card, CardCollection, CardFace, ConstellationCardsState, Uid } from "./state"
 
+// import pool from "../server/database"
+
 function generateUid() {
     return randomBytes(16).toString("hex")
 }
