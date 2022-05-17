@@ -1,9 +1,8 @@
 import { Room } from "colyseus"
-// rooms/MyRoom.ts (server-side, room file)
 import { randomBytes } from "crypto"
 import { map, mapObjIndexed } from "ramda"
 
-import { defaultState, presets, PresetFlipRule } from "./default-state"
+import { defaultState, PresetFlipRule, presets } from "./default-state"
 import { Card, CardCollection, CardFace, ConstellationCardsState, Uid } from "./state"
 
 function generateUid() {
@@ -11,6 +10,10 @@ function generateUid() {
 }
 
 import { CardActionNames } from "./constants"
+
+interface RoomCreateOptions {
+    gameId?: string;
+}
 
 interface CardDesc {
     name: string;
@@ -51,7 +54,7 @@ export interface FlipCardAction {
 
 export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
     // Given a card, move it from its current location to a named destination
-    moveCard(card: Card, dest: Uid): void {
+    moveCard(card: Card, dest: Uid): CardCollection {
         if (card.location != dest) {
             const destCollection = this.state.collections.get(dest)
             if (destCollection) {
@@ -64,14 +67,22 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
                 card.location = dest
             } else {
                 console.error(`Unable to move card ${card.uid} to destination UID: ${dest}`)
-            }                
+            }
+            return destCollection
         } else {
             console.error(`Attempt to move card UID ${card.uid} to its own location`)
+            return null
         }
     }
 
     // room has been created: bring your own logic
-    async onCreate(options: any) {
+    async onCreate(options: RoomCreateOptions) {
+        this.setMetadata({
+            gameId: options.gameId || generateUid()
+        })
+
+        // TODO: load state from MongoDB using gameId as primary key
+        // If no state was found, setState using the default state
         this.setState(new ConstellationCardsState())
 
         // Add data from default state
@@ -212,10 +223,9 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
         this.onMessage(CardActionNames.MOVE_CARD, (_client, data: MoveCardAction) => {
             const card: Card = this.state.cards.get(data.cardUid)
             if (card) {
-                this.moveCard(card, data.dest)
+                const collection = this.moveCard(card, data.dest)
 
-                // TODO: name the collection
-                this.broadcast("announcement", `${card.name} was moved to a new collection`)
+                this.broadcast("announcement", collection ? `${card.name} was moved to ${collection.name}` : `${card.name} was not moved`)
             }
         })
 

@@ -1,10 +1,10 @@
 import Button from "@mui/material/Button"
+import Tooltip from "@mui/material/Tooltip"
+import { map } from "ramda"
 import React from "react"
 
-import { RoomActions } from "./ConstellationCardsGame"
 import { presets } from "../default-state"
-import { map } from "ramda"
-import Tooltip from "@mui/material/Tooltip"
+import { RoomActions } from "./ConstellationCardsGame"
 
 interface CreateCollectionDialogProps {
     actions: RoomActions
@@ -24,7 +24,7 @@ export default ({ actions, createExpanded }: CreateCollectionDialogProps) => {
         <div>
             {map(
                 (preset) => (
-                    <Tooltip title={preset.description}>
+                    <Tooltip title={preset.description} key={preset.name}>
                         <Button
                             data-preset-name={preset.name}
                             variant="outlined"

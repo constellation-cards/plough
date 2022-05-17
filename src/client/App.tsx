@@ -17,6 +17,7 @@ export default (props: any) => (
         <Routes>
             <Route path="/" element={<ConstellationCardsHome />} />
             <Route path="/game" element={<GameContainer roomName={ConstellationCardsRoomName} />} />
+            <Route path="/game/:gameId" element={<GameContainer roomName={ConstellationCardsRoomName} />} />
         </Routes>
     </React.Fragment>
 )
