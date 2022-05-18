@@ -1,5 +1,5 @@
 import { MapSchema } from "@colyseus/schema"
-import { AppBar, Button, Drawer, Toolbar } from "@mui/material"
+import { Drawer } from "@mui/material"
 import Container from "@mui/material/Container"
 import Stack from "@mui/material/Stack"
 import { Room } from "colyseus.js"
@@ -8,6 +8,7 @@ import React, { useEffect, useState } from "react"
 
 import { CardActionNames } from "../constants"
 import { CreateCollectionAction, DeleteCollectionAction, FlipCardAction, MoveCardAction, RenameCollectionAction, UpsertCardAction } from "../room"
+import ConstellationCardsAppbar from "./ConstellationCardsAppbar"
 import CreateCollectionDialog from "./CreateCollectionDialog"
 import PreviewCardModal from "./PreviewCardModal"
 import Spread from "./Spread"
@@ -125,13 +126,7 @@ export default ({ room }: ConstellationCardsGameProps) => {
 
     return (
         <Container maxWidth="xl" disableGutters={false} >
-            <AppBar position="static">
-                <Toolbar>
-                    <Button color="inherit" component={'a'} href="https://constellation.cards/" target="_blank">
-                        Constellation Cards
-                    </Button>
-                </Toolbar>
-            </AppBar>
+            <ConstellationCardsAppbar actions={actions} />
             <Drawer anchor="left" open={isDrawerOpen} onClose={onCloseDrawer}>
                 <Stacks
                     collections={stacks}
@@ -150,10 +145,6 @@ export default ({ room }: ConstellationCardsGameProps) => {
                     ),
                     spreads
                 )}
-                <CreateCollectionDialog
-                    actions={actions}
-                    createExpanded={true}
-                />
                 <PreviewCardModal
                     previewCard={previewCard}
                     setPreviewCard={setPreviewCard}
