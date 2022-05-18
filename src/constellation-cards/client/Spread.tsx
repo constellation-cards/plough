@@ -3,13 +3,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import ArrowRightIcon from "@mui/icons-material/ArrowRight"
 import ClearIcon from "@mui/icons-material/Clear"
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
-import Box from "@mui/material/Box"
-import Button from "@mui/material/Button"
-import ButtonGroup from "@mui/material/ButtonGroup"
-import Grid from "@mui/material/Grid"
-import Popover from "@mui/material/Popover"
-import Tooltip from "@mui/material/Tooltip"
-import Typography from "@mui/material/Typography"
+import { Box, Button, ButtonGroup, Grid, Popover, Tooltip, Typography } from "@mui/material"
 import { map } from "ramda"
 import React, { useState } from "react"
 
@@ -66,7 +60,7 @@ export default ({ collection, actions }: CollapsedCollectionProps) => {
     return (
         <>
             <Box sx={{ m: 1, border: 2, boxShadow: "4px 4px" }}>
-                <Box sx={{ textAlign: "center", width: "100%" }}>
+                <Box sx={{ textAlign: "center", width: "100%", cursor: "pointer" }}>
                     <Typography
                         fontSize="h5.fontSize"
                         fontWeight="bold"

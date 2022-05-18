@@ -1,9 +1,6 @@
 import AutorenewIcon from "@mui/icons-material/Autorenew"
 import ClearIcon from "@mui/icons-material/Clear"
-import Button from "@mui/material/Button"
-import ButtonGroup from "@mui/material/ButtonGroup"
-import Popover from "@mui/material/Popover"
-import Tooltip from "@mui/material/Tooltip"
+import { Box, Button, ButtonGroup, Popover, Tooltip } from "@mui/material"
 import React from "react"
 import ReactCardFlip from "react-card-flip"
 
@@ -41,26 +38,40 @@ export default ({ card, isExpanded, actions }: ExpandedCardProps) => {
 
     return (
         <>
-            <ReactCardFlip
-                key={card.uid}
-                isFlipped={card.flipped}
-                flipDirection="horizontal"
-            >
-                <CardFace key={"front"} card={card} isExpanded={isExpanded} isFlipped={false} onClick={handleClick} />
-                <CardFace key={"back"} card={card} isExpanded={isExpanded} isFlipped={true} onClick={handleClick} />
-            </ReactCardFlip>
+            <Box sx={{ cursor: "pointer" }}>
+                <ReactCardFlip
+                    key={card.uid}
+                    isFlipped={card.flipped}
+                    flipDirection="horizontal"
+                >
+                    <CardFace
+                        key={"front"}
+                        card={card}
+                        isExpanded={isExpanded}
+                        isFlipped={false}
+                        onClick={handleClick}
+                    />
+                    <CardFace
+                        key={"back"}
+                        card={card}
+                        isExpanded={isExpanded}
+                        isFlipped={true}
+                        onClick={handleClick}
+                    />
+                </ReactCardFlip>
+            </Box>
             <Popover
                 open={open}
                 anchorEl={anchorEl}
                 onClose={handleClose}
                 anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'center',
-                  }}
-                  transformOrigin={{
-                    vertical: 'center',
-                    horizontal: 'center',
-                  }}
+                    vertical: "top",
+                    horizontal: "center",
+                }}
+                transformOrigin={{
+                    vertical: "center",
+                    horizontal: "center",
+                }}
             >
                 <div>
                     <ButtonGroup variant="contained">

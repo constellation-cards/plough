@@ -1,14 +1,7 @@
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import NavigateNextIcon from "@mui/icons-material/NavigateNext"
-import { ListItemIcon } from "@mui/material"
-import Collapse from "@mui/material/Collapse"
-import IconButton from "@mui/material/IconButton"
-import List from "@mui/material/List"
-import ListItem from "@mui/material/ListItem"
-import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction"
-import ListItemText from "@mui/material/ListItemText"
-import Tooltip from "@mui/material/Tooltip"
+import { Collapse, IconButton, List, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText, Tooltip } from "@mui/material"
 import { map } from "ramda"
 import React, { useState } from "react"
 

@@ -1,6 +1,6 @@
-import CssBaseline from "@mui/material/CssBaseline"
+import { CssBaseline } from "@mui/material"
 import React from "react"
-import { Link, Route, Routes } from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
 
 import ConstellationCardsHome from "../constellation-cards/client/ConstellationCardsHome"
 import { ConstellationCardsRoomName } from "../constellation-cards/constants"

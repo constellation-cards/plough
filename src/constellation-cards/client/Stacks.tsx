@@ -1,4 +1,4 @@
-import List from "@mui/material/List"
+import { List } from "@mui/material"
 import { map } from "ramda"
 import React from "react"
 

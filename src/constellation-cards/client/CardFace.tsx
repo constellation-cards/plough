@@ -1,6 +1,4 @@
-import { Typography } from "@mui/material"
-import Box from "@mui/material/Box"
-import Paper from "@mui/material/Paper"
+import { Box, Paper, Typography } from "@mui/material"
 import { map } from "ramda"
 import React from "react"
 
