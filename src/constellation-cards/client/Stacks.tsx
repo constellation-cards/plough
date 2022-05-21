@@ -3,12 +3,12 @@ import { map } from "ramda"
 import React from "react"
 
 import { RoomActions } from "./ConstellationCardsGame"
-import CollapsedCollection from "./Stack"
-import { CardCollection } from "./state/CardCollection"
+import Stack from "./Stack"
+import { PloughCollection } from "./state/PloughCollection"
 
 interface CollapsedCollectionListProps {
-    collections: CardCollection[];
-    activeCollection: CardCollection;
+    collections: PloughCollection[];
+    activeCollection: PloughCollection;
     actions: RoomActions;
     children?: React.ReactNode;
 }
@@ -16,7 +16,7 @@ interface CollapsedCollectionListProps {
 export default ({collections, activeCollection: activeContainer, actions}: CollapsedCollectionListProps) => {
     return (
         <List sx={{ bgcolor: 'background.paper' }}>
-            {map((collection: CardCollection) => <CollapsedCollection key={collection.uid} activeCollection={activeContainer} actions={actions} collection={collection} />, collections)}
+            {map((collection: PloughCollection) => <Stack key={collection.uid} activeCollection={activeContainer} actions={actions} collection={collection} />, collections)}
         </List>
     )
 }

@@ -9,11 +9,11 @@ import React, { useState } from "react"
 
 import { RoomActions } from "./ConstellationCardsGame"
 import SpreadCard from "./SpreadCard"
-import { Card } from "./state/Card"
-import { CardCollection } from "./state/CardCollection"
+import { PloughCard } from "./state/PloughCard"
+import { PloughCollection } from "./state/PloughCollection"
 
 interface CollapsedCollectionProps {
-    collection: CardCollection
+    collection: PloughCollection
     actions: RoomActions
     children?: React.ReactNode
 }
@@ -72,7 +72,7 @@ export default ({ collection, actions }: CollapsedCollectionProps) => {
                 </Box>
                 <Grid container spacing={2}>
                     {map(
-                        (card: Card) => (
+                        (card: PloughCard) => (
                             <Grid
                                 item
                                 xs={4}

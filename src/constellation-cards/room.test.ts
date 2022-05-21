@@ -1,10 +1,10 @@
-import { ColyseusTestServer, boot } from "@colyseus/testing";
+import { boot, ColyseusTestServer } from "@colyseus/testing";
 import { Room } from "colyseus";
 import { Room as ClientRoom } from "colyseus.js";
 
 import appConfig from "../arena.config"
-import { Card } from "./client/state/Card";
-import { CardCollection } from "./client/state/CardCollection";
+import { PloughCard } from "./client/state/PloughCard";
+import { PloughCollection } from "./client/state/PloughCollection";
 import { ConstellationCardsRoom } from "./room";
 
 describe("room", () => {
@@ -63,7 +63,7 @@ describe("room", () => {
 
                 // Find the UID for the stack we just created
                 let home: string
-                client.state.collections.forEach((collection: CardCollection) => {
+                client.state.collections.forEach((collection: PloughCollection) => {
                     home = collection.uid
                 })
 
@@ -75,8 +75,8 @@ describe("room", () => {
 
                 // Card should have been created
                 expect(client.state.cards.size).toEqual(1)
-                let card: Card
-                client.state.cards.forEach((myCard: Card) => {
+                let card: PloughCard
+                client.state.cards.forEach((myCard: PloughCard) => {
                     card = myCard
                 })
                 expect(card.name).toEqual("Front / Back")
@@ -89,7 +89,7 @@ describe("room", () => {
                 expect(card.location).toEqual(home)
 
                 // Card should have been added to home stack
-                client.state.collections.forEach((collection: CardCollection) => {
+                client.state.collections.forEach((collection: PloughCollection) => {
                     expect(collection.cards.length).toEqual(1)
                     expect(collection.cards[0].uid).toEqual(card.uid)
                 })
@@ -101,7 +101,7 @@ describe("room", () => {
                 client.send("create-collection", standardCollection)
                 await client.waitForNextPatch()
                 expect(client.state.collections.size).toEqual(1)
-                client.state.collections.forEach((collection: CardCollection) => {
+                client.state.collections.forEach((collection: PloughCollection) => {
                     expect(collection.name).toEqual("New Collection")
                     expect(collection.expanded).toEqual(true)
                 })
@@ -115,7 +115,7 @@ describe("room", () => {
                 expect(client.state.collections.size).toEqual(1)
 
                 let uid: string
-                client.state.collections.forEach((collection: CardCollection) => {
+                client.state.collections.forEach((collection: PloughCollection) => {
                     uid = collection.uid
                 })
 
@@ -138,7 +138,7 @@ describe("room", () => {
                 await client.waitForNextPatch()
 
                 let a, b: string;
-                client.state.collections.forEach((collection: CardCollection) => {
+                client.state.collections.forEach((collection: PloughCollection) => {
                     if (collection.name === "A") {
                         a = collection.uid
                     } else if (collection.name === "B") {

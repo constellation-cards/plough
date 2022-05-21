@@ -6,10 +6,10 @@ import ReactCardFlip from "react-card-flip"
 
 import CardFace from "./CardFace"
 import { RoomActions } from "./ConstellationCardsGame"
-import { Card } from "./state/Card"
+import { PloughCard } from "./state/PloughCard"
 
 interface ExpandedCardProps {
-    card: Card
+    card: PloughCard
     isExpanded: boolean
     actions: RoomActions
     children?: React.ReactNode

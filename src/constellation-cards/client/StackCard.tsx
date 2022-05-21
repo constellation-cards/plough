@@ -3,12 +3,12 @@ import { IconButton, ListItem, ListItemSecondaryAction, ListItemText, Tooltip } 
 import React from "react"
 
 import { RoomActions } from "./ConstellationCardsGame"
-import { Card as CardState } from "./state/Card"
-import { CardCollection } from "./state/CardCollection"
+import { PloughCard } from "./state/PloughCard"
+import { PloughCollection } from "./state/PloughCollection"
 
 interface CollapsedCardProps {
-    card: CardState;
-    activeCollection: CardCollection;
+    card: PloughCard;
+    activeCollection: PloughCollection;
     actions: RoomActions;
     children?: React.ReactNode;
 }

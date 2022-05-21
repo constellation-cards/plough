@@ -6,14 +6,14 @@
 // 
 
 import { Schema, type, ArraySchema, MapSchema, SetSchema, DataChange } from '@colyseus/schema';
-import { CardFace } from './CardFace'
+import { PloughCardFace } from './PloughCardFace'
 
-export class Card extends Schema {
+export class PloughCard extends Schema {
     @type("string") public uid!: string;
     @type("string") public name!: string;
     @type("boolean") public flipped!: boolean;
     @type("string") public home!: string;
     @type("string") public location!: string;
-    @type(CardFace) public front: CardFace = new CardFace();
-    @type(CardFace) public back: CardFace = new CardFace();
+    @type(PloughCardFace) public front: PloughCardFace = new PloughCardFace();
+    @type(PloughCardFace) public back: PloughCardFace = new PloughCardFace();
 }

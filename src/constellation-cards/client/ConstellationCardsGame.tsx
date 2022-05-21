@@ -10,9 +10,9 @@ import ConstellationCardsAppbar from "./ConstellationCardsAppbar"
 import PreviewCardModal from "./PreviewCardModal"
 import Spread from "./Spread"
 import Stacks from "./Stacks"
-import { Card } from "./state/Card"
-import { CardCollection } from "./state/CardCollection"
-import { ConstellationCardsState } from "./state/ConstellationCardsState"
+import { PloughCard } from "./state/PloughCard"
+import { PloughCollection } from "./state/PloughCollection"
+import { PloughState } from "./state/PloughState"
 
 interface ConstellationCardsGameProps {
     room: Room
@@ -20,36 +20,36 @@ interface ConstellationCardsGameProps {
 }
 
 export interface RoomActions {
-    moveCardAction: (card: Card, dest: CardCollection) => void
-    discardCardAction: (card: Card) => void
-    flipCardAction: (card: Card) => void
+    moveCardAction: (card: PloughCard, dest: PloughCollection) => void
+    discardCardAction: (card: PloughCard) => void
+    flipCardAction: (card: PloughCard) => void
     createCollectionAction: (name: string, preset: string, expanded: boolean) => void
-    deleteCollectionAction: (collection: CardCollection) => void
-    renameCollectionAction: (collection: CardCollection, name: string) => void
-    setActiveCollection: (activeCollection: CardCollection) => void
+    deleteCollectionAction: (collection: PloughCollection) => void
+    renameCollectionAction: (collection: PloughCollection, name: string) => void
+    setActiveCollection: (activeCollection: PloughCollection) => void
     setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setPreviewCard: React.Dispatch<React.SetStateAction<Card>>
+    setPreviewCard: React.Dispatch<React.SetStateAction<PloughCard>>
 }
 
 const createActions = (
-    room: Room, setActiveCollection: (activeCollection: CardCollection) => void,
+    room: Room, setActiveCollection: (activeCollection: PloughCollection) => void,
     setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    setPreviewCard: React.Dispatch<React.SetStateAction<Card>>): RoomActions => ({
-    moveCardAction: (card: Card, dest: CardCollection) => {
+    setPreviewCard: React.Dispatch<React.SetStateAction<PloughCard>>): RoomActions => ({
+    moveCardAction: (card: PloughCard, dest: PloughCollection) => {
         const data: MoveCardAction = {
             cardUid: card.uid,
             dest: dest.uid,
         }
         room.send(CardActionNames.MOVE_CARD, data)
     },
-    discardCardAction: (card: Card) => {
+    discardCardAction: (card: PloughCard) => {
         const data: MoveCardAction = {
             cardUid: card.uid,
             dest: card.home,
         }
         room.send(CardActionNames.MOVE_CARD, data)
     },
-    flipCardAction: (card: Card) => {
+    flipCardAction: (card: PloughCard) => {
         const data: FlipCardAction = {
             cardUid: card.uid,
         }
@@ -63,13 +63,13 @@ const createActions = (
         }
         room.send(CardActionNames.CREATE_COLLECTION, data)
     },
-    deleteCollectionAction: (collection: CardCollection) => {
+    deleteCollectionAction: (collection: PloughCollection) => {
         const data: DeleteCollectionAction = {
             uid: collection.uid
         }
         room.send(CardActionNames.DELETE_COLLECTION, data)
     },
-    renameCollectionAction: (collection: CardCollection, name: string) => {
+    renameCollectionAction: (collection: PloughCollection, name: string) => {
         const data: RenameCollectionAction = {
             uid: collection.uid,
             name
@@ -84,24 +84,24 @@ const createActions = (
 const sortWithRules = [ascend(prop("name"))]
 
 const gameCollectionList = (
-    collections: MapSchema<CardCollection>
-): [CardCollection[], CardCollection[]] => {
+    collections: MapSchema<PloughCollection>
+): [PloughCollection[], PloughCollection[]] => {
     const collectionValues = collections ? Array.from(collections.values()) : []
     // Hey Typescript, why do I have to force this type?
     const collectionArray = sortWith(
         sortWithRules,
         collectionValues
-    ) as CardCollection[]
+    ) as PloughCollection[]
     return partition(
-        (collection: CardCollection) => collection.expanded,
+        (collection: PloughCollection) => collection.expanded,
         collectionArray
     )
 }
 
 export default ({ room }: ConstellationCardsGameProps) => {
-    const [gameState, setGameState] = useState<ConstellationCardsState>(null)
+    const [gameState, setGameState] = useState<PloughState>(null)
     const [isDrawerOpen, setDrawerOpen] = useState(false)
-    const [previewCard, setPreviewCard] = useState<Card | null>(null)
+    const [previewCard, setPreviewCard] = useState<PloughCard | null>(null)
 
     useEffect(() => {
         console.log("Registering onStateChange event with room")
@@ -133,7 +133,7 @@ export default ({ room }: ConstellationCardsGameProps) => {
             </Drawer>
             <Stack spacing={2}>
                 {map(
-                    (collection: CardCollection) => (
+                    (collection: PloughCollection) => (
                         <Spread
                             key={collection.uid}
                             collection={collection}

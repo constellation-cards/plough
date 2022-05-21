@@ -2,11 +2,11 @@ import { Box, Modal, Stack } from "@mui/material"
 import * as React from "react"
 
 import CardFace from "./CardFace"
-import { Card } from "./state/Card"
+import { PloughCard } from "./state/PloughCard"
 
 interface PreviewCardModalProps {
-    previewCard: Card | null
-    setPreviewCard: React.Dispatch<React.SetStateAction<Card>>
+    previewCard: PloughCard | null
+    setPreviewCard: React.Dispatch<React.SetStateAction<PloughCard>>
     children?: React.ReactNode
 }
 

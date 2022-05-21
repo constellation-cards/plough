@@ -2,10 +2,10 @@ import { Box, Paper, Typography } from "@mui/material"
 import { map } from "ramda"
 import React from "react"
 
-import { Card } from "./state/Card"
+import { PloughCard } from "./state/PloughCard"
 
 interface CardFaceProps {
-    card: Card
+    card: PloughCard
     isExpanded?: boolean | undefined
     isFlipped?: boolean | undefined
     onClick?: any

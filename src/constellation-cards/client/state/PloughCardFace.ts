@@ -6,11 +6,9 @@
 // 
 
 import { Schema, type, ArraySchema, MapSchema, SetSchema, DataChange } from '@colyseus/schema';
-import { Card } from './Card'
 
-export class CardCollection extends Schema {
-    @type("string") public uid!: string;
+
+export class PloughCardFace extends Schema {
     @type("string") public name!: string;
-    @type("boolean") public expanded!: boolean;
-    @type([ Card ]) public cards: ArraySchema<Card> = new ArraySchema<Card>();
+    @type("string") public description!: string;
 }

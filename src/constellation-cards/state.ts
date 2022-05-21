@@ -1,4 +1,4 @@
-import { Schema, ArraySchema, MapSchema, type } from "@colyseus/schema"
+import { ArraySchema, MapSchema, Schema, type } from "@colyseus/schema"
 
 /**
  * A card has a name, a description, and a flipped state.
@@ -8,32 +8,32 @@ import { Schema, ArraySchema, MapSchema, type } from "@colyseus/schema"
 
 export type Uid = string;
 
-export class CardFace extends Schema {
+export class PloughCardFace extends Schema {
     @type("string") name: string = ""
     @type("string") description: string = ""
 }
 
-export class Card extends Schema {
+export class PloughCard extends Schema {
     @type("string") uid: string = ""
     // The card name is either "Front Name / Back Name" or "Front Name" if both are the same
     @type("string") name: string = ""
     @type("boolean") flipped: boolean = false
     @type("string") home: Uid = ""
     @type("string") location: Uid = ""
-    @type(CardFace) front: CardFace
-    @type(CardFace) back: CardFace
+    @type(PloughCardFace) front: PloughCardFace
+    @type(PloughCardFace) back: PloughCardFace
 }
 
-export class CardCollection extends Schema {
+export class PloughCollection extends Schema {
     @type("string") uid: string = ""
     @type("string") name: string = ""
     @type("boolean") expanded: boolean = false
 
-    @type([Card]) cards = new ArraySchema<Card>()
+    @type([PloughCard]) cards = new ArraySchema<PloughCard>()
 }
 
 // Our custom game state, an ArraySchema of type Player only at the moment
-export class ConstellationCardsState extends Schema {
-    @type({map: Card}) cards = new MapSchema<Card>()
-    @type({map: CardCollection}) collections = new MapSchema<CardCollection>()
+export class PloughState extends Schema {
+    @type({map: PloughCard}) cards = new MapSchema<PloughCard>()
+    @type({map: PloughCollection}) collections = new MapSchema<PloughCollection>()
 }

@@ -7,12 +7,12 @@ import React, { useState } from "react"
 
 import { RoomActions } from "./ConstellationCardsGame"
 import StackCard from "./StackCard"
-import { Card } from "./state/Card"
-import { CardCollection } from "./state/CardCollection"
+import { PloughCard } from "./state/PloughCard"
+import { PloughCollection } from "./state/PloughCollection"
 
 interface CollapsedCollectionProps {
-    collection: CardCollection;
-    activeCollection: CardCollection;
+    collection: PloughCollection;
+    activeCollection: PloughCollection;
     actions: RoomActions;
     children?: React.ReactNode;
 }
@@ -49,7 +49,7 @@ export default ({
             <Collapse in={isExpanded}>
                 <List component="div" disablePadding>
                     {map(
-                        (card: Card) => (
+                        (card: PloughCard) => (
                             <StackCard
                                 key={card.uid}
                                 activeCollection={activeCollection}

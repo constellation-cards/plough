@@ -2,7 +2,7 @@ import { ConstellationCardFace, ConstellationCardPresetFlipRule, getCards, getPr
 import { Room } from "colyseus"
 import { randomBytes } from "crypto"
 
-import { Card, CardCollection, CardFace, ConstellationCardsState, Uid } from "./state"
+import { PloughCard, PloughCollection, PloughCardFace, PloughState, Uid } from "./state"
 
 // import pool from "../server/database"
 
@@ -64,9 +64,9 @@ function cardToDescription(face: ConstellationCardFace): string {
     return pieces.join('\n')
 }
 
-export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
+export class ConstellationCardsRoom extends Room<PloughState> {
     // Given a card, move it from its current location to a named destination
-    moveCard(card: Card, dest: Uid): CardCollection {
+    moveCard(card: PloughCard, dest: Uid): PloughCollection {
         if (card.location != dest) {
             const destCollection = this.state.collections.get(dest)
             if (destCollection) {
@@ -95,11 +95,11 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
 
         // TODO: load state from MongoDB using gameId as primary key
         // If no state was found, setState using the default state
-        this.setState(new ConstellationCardsState())
+        this.setState(new PloughState())
 
         // Import default stacks
         for (let stack of getStacks()) {
-            const collection = new CardCollection();
+            const collection = new PloughCollection();
             collection.uid = stack.uid
             collection.name = stack.name
             collection.expanded = false
@@ -107,7 +107,7 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
         }
 
         // Create a blank spread
-        const defaultCollection = new CardCollection();
+        const defaultCollection = new PloughCollection();
         defaultCollection.uid = "default";
         defaultCollection.name = "Default";
         defaultCollection.expanded = true;
@@ -116,16 +116,16 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
         // TODO: quantity
 
         for (let card of getCards()) {
-            const newCard = new Card()
+            const newCard = new PloughCard()
             newCard.uid = card.uid
             newCard.name = `${card.front.name} / ${card.back.name}`
             newCard.flipped = false
             newCard.home = card.stack // this is a UID
             newCard.location = card.stack
-            newCard.front = new CardFace()
+            newCard.front = new PloughCardFace()
             newCard.front.name = card.front.name
             newCard.front.description = cardToDescription(card.front)
-            newCard.back = new CardFace()
+            newCard.back = new PloughCardFace()
             newCard.back.name = card.back.name
             newCard.back.description = cardToDescription(card.back)
             this.state.cards.set(card.uid, newCard)
@@ -136,15 +136,15 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
         // BEGIN state management actions
 
         this.onMessage(CardActionNames.UPSERT_CARD, (_client, data: UpsertCardAction) => {
-            let card: Card;
+            let card: PloughCard;
 
             if (data.uid) {
                 card = this.state.cards.get(data.uid)
             } else {
-                card = new Card()
+                card = new PloughCard()
                 card.uid = generateUid()
             }
-            card.front = new CardFace()
+            card.front = new PloughCardFace()
             card.front.name = data.front.name
             card.front.description = data.front.description
             card.back.name = data.back.name
@@ -173,7 +173,7 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
         // TODO: delete-card
 
         this.onMessage(CardActionNames.CREATE_COLLECTION, (_client, data: CreateCollectionAction) => {
-            const collection = new CardCollection()
+            const collection = new PloughCollection()
             collection.uid = generateUid()
             collection.name = data.name
             collection.expanded = data.expanded
@@ -214,7 +214,7 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
             // Return cards in this collection to their home
             const collection = this.state.collections.get(data.uid)
             if (collection) {
-                collection.cards.forEach((card: Card) => {
+                collection.cards.forEach((card: PloughCard) => {
                     this.moveCard(card, card.home)
                 })
                 // Remove the collection
@@ -238,7 +238,7 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
         })
 
         this.onMessage(CardActionNames.MOVE_CARD, (_client, data: MoveCardAction) => {
-            const card: Card = this.state.cards.get(data.cardUid)
+            const card: PloughCard = this.state.cards.get(data.cardUid)
             if (card) {
                 const collection = this.moveCard(card, data.dest)
 
@@ -247,7 +247,7 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
         })
 
         this.onMessage(CardActionNames.FLIP_CARD, (_client, data: FlipCardAction) => {
-            const card: Card = this.state.cards.get(data.cardUid)
+            const card: PloughCard = this.state.cards.get(data.cardUid)
             if (card) {
                 card.flipped = !card.flipped
 
