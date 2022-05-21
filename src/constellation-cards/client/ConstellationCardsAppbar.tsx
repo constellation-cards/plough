@@ -1,15 +1,17 @@
+import { getPresets } from "@constellation-cards/cards"
 import MenuIcon from "@mui/icons-material/Menu"
 import { AppBar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from "@mui/material"
 import { map } from "ramda"
 import React from "react"
 
-import { presets } from "../default-state"
 import { RoomActions } from "./ConstellationCardsGame"
 
 interface ConstellationCardsAppbarProps {
     actions: RoomActions
     children?: React.ReactNode
 }
+
+const presets = getPresets()
 
 export default ({ actions }: ConstellationCardsAppbarProps) => {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(

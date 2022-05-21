@@ -64,6 +64,7 @@
   },
   "dependencies": {
     "@colyseus/monitor": "^0.14.22",
+    "@constellation-cards/cards": "^1.0.4",
     "@emotion/react": "^11.7.0",
     "@emotion/styled": "^11.6.0",
     "@fontsource/roboto": "^4.5.1",

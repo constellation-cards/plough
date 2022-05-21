@@ -1,8 +1,7 @@
+import { ConstellationCardFace, ConstellationCardPresetFlipRule, getCards, getPresets, getStacks } from '@constellation-cards/cards'
 import { Room } from "colyseus"
 import { randomBytes } from "crypto"
-import { map, mapObjIndexed } from "ramda"
 
-import { defaultState, PresetFlipRule, presets } from "./default-state"
 import { Card, CardCollection, CardFace, ConstellationCardsState, Uid } from "./state"
 
 // import pool from "../server/database"
@@ -12,6 +11,7 @@ function generateUid() {
 }
 
 import { CardActionNames } from "./constants"
+import { readlink } from 'fs'
 
 interface RoomCreateOptions {
     gameId?: string;
@@ -54,6 +54,16 @@ export interface FlipCardAction {
     cardUid: Uid;
 }
 
+function cardToDescription(face: ConstellationCardFace): string {
+    const pieces = [`${face.description}\n`]
+    if (face.prompts && face.prompts.length > 0) {
+        const prompts = face.prompts.map(prompt => `- ${prompt}\n`).join('')
+        pieces.push(prompts)
+    }
+    pieces.push(face.rule)
+    return pieces.join('\n')
+}
+
 export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
     // Given a card, move it from its current location to a named destination
     moveCard(card: Card, dest: Uid): CardCollection {
@@ -87,38 +97,41 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
         // If no state was found, setState using the default state
         this.setState(new ConstellationCardsState())
 
-        // Add data from default state
-        mapObjIndexed((collectionData: Record<string, any>, uid, _idx) => {
+        // Import default stacks
+        for (let stack of getStacks()) {
             const collection = new CardCollection();
-            collection.uid = uid;
-            collection.name = collectionData.name;
-            collection.expanded = collectionData.expanded;
-            this.state.collections.set(uid, collection)
-        }, defaultState.collections)
+            collection.uid = stack.uid
+            collection.name = stack.name
+            collection.expanded = false
+            this.state.collections.set(collection.uid, collection)
+        }
 
+        // Create a blank spread
         const defaultCollection = new CardCollection();
         defaultCollection.uid = "default";
         defaultCollection.name = "Default";
         defaultCollection.expanded = true;
         this.state.collections.set("default", defaultCollection);
 
-        map(cardData => {
-            const card = new Card();
-            card.uid = cardData.uid;
-            card.name = cardData.name;
-            card.flipped = cardData.flipped;
-            card.home = cardData.home;
-            card.location = cardData.home;
-            card.front = new CardFace()
-            card.front.name = cardData.front.name;
-            card.front.description = cardData.front.description;
-            card.back = new CardFace()
-            card.back.name = cardData.back.name;
-            card.back.description = cardData.back.description;
-            this.state.cards.set(card.uid, card)
-            const collection = this.state.collections.get(card.home)
-            collection.cards.push(card)
-        }, defaultState.cards)
+        // TODO: quantity
+
+        for (let card of getCards()) {
+            const newCard = new Card()
+            newCard.uid = card.uid
+            newCard.name = `${card.front.name} / ${card.back.name}`
+            newCard.flipped = false
+            newCard.home = card.stack // this is a UID
+            newCard.location = card.stack
+            newCard.front = new CardFace()
+            newCard.front.name = card.front.name
+            newCard.front.description = cardToDescription(card.front)
+            newCard.back = new CardFace()
+            newCard.back.name = card.back.name
+            newCard.back.description = cardToDescription(card.back)
+            this.state.cards.set(card.uid, newCard)
+            const collection = this.state.collections.get(newCard.home)
+            collection.cards.push(newCard)
+        }
 
         // BEGIN state management actions
 
@@ -167,25 +180,27 @@ export class ConstellationCardsRoom extends Room<ConstellationCardsState> {
 
             this.state.collections.set(collection.uid, collection)
 
-            for (let preset of presets) {
+            for (let preset of getPresets()) {
                 if (preset.name === data.preset) {
-                    for (let data of preset.collections) {
-                        const presetCollection = this.state.collections.get(data.collectionUid)
+                    for (let source of preset.sources) {
+                        const presetCollection = this.state.collections.get(source.stack)
                         if (presetCollection) {
-                            if (presetCollection.cards.length > 0) {
-                                const randomCard = presetCollection.cards[Math.floor(Math.random() * presetCollection.cards.length)];
-                                this.moveCard(randomCard, collection.uid)
-                                switch (data.flipRule) {
-                                    case PresetFlipRule.NO:
-                                        randomCard.flipped = false;
-                                        break;
-                                    case PresetFlipRule.YES:
-                                        randomCard.flipped = true;
-                                        break;
-                                    case PresetFlipRule.RANDOM:
-                                        randomCard.flipped = (Math.random() >= 0.5) ? true : false;
-                                        break;
-                                }
+                            for (let i = 0; i < source.quantity; i++) {
+                                if (presetCollection.cards.length > 0) {
+                                    const randomCard = presetCollection.cards[Math.floor(Math.random() * presetCollection.cards.length)];
+                                    this.moveCard(randomCard, collection.uid)
+                                    switch (source.flipRule) {
+                                        case ConstellationCardPresetFlipRule.FRONT:
+                                            randomCard.flipped = false;
+                                            break;
+                                        case ConstellationCardPresetFlipRule.BACK:
+                                            randomCard.flipped = true;
+                                            break;
+                                        case ConstellationCardPresetFlipRule.RANDOM:
+                                            randomCard.flipped = (Math.random() >= 0.5) ? true : false;
+                                            break;
+                                    }
+                                }    
                             }
                         }
                     }
