@@ -2,16 +2,15 @@ import { ConstellationCardFace, ConstellationCardPresetFlipRule, getCards, getPr
 import { Room } from "colyseus"
 import { randomBytes } from "crypto"
 
-import { PloughCard, PloughCollection, PloughCardFace, PloughState, Uid } from "./state"
-
-// import pool from "../server/database"
+import { query, SELECT_STATEMENT, UPSERT_STATEMENT } from "../server/database"
+import { PloughCard, PloughCardFace, PloughCollection, PloughState, Uid } from "./state"
 
 function generateUid() {
     return randomBytes(16).toString("hex")
 }
 
 import { CardActionNames } from "./constants"
-import { readlink } from 'fs'
+import { map, omit } from 'ramda'
 
 interface RoomCreateOptions {
     gameId?: string;
@@ -93,44 +92,74 @@ export class ConstellationCardsRoom extends Room<PloughState> {
             gameId: options.gameId || generateUid()
         })
 
-        // TODO: load state from MongoDB using gameId as primary key
-        // If no state was found, setState using the default state
         this.setState(new PloughState())
 
-        // Import default stacks
-        for (let stack of getStacks()) {
-            const collection = new PloughCollection();
-            collection.uid = stack.uid
-            collection.name = stack.name
-            collection.expanded = false
-            this.state.collections.set(collection.uid, collection)
-        }
+        const result = await query(SELECT_STATEMENT, [this.metadata.gameId])
 
-        // Create a blank spread
-        const defaultCollection = new PloughCollection();
-        defaultCollection.uid = "default";
-        defaultCollection.name = "Default";
-        defaultCollection.expanded = true;
-        this.state.collections.set("default", defaultCollection);
+        if(result && result.rows.length > 0) {
+            const cards: Record<string,PloughCard> = result.rows[0].gamestate.cards
+            const collections: Record<string,PloughCollection> = result.rows[0].gamestate.collections
+            for (let dbCollection of Object.values(collections)) {
+                const collection = new PloughCollection()
+                collection.uid = dbCollection.uid
+                collection.name = dbCollection.name
+                collection.expanded = dbCollection.expanded
+                this.state.collections.set(collection.uid, collection)
+            }
 
-        // TODO: quantity
+            for (let dbCard of Object.values(cards)) {
+                const newCard = new PloughCard()
+                newCard.uid = dbCard.uid
+                newCard.name = dbCard.name
+                newCard.flipped = dbCard.flipped
+                newCard.home = dbCard.home
+                newCard.location = dbCard.location
+                newCard.front = new PloughCardFace()
+                newCard.front.name = dbCard.front.name
+                newCard.front.description = dbCard.front.description
+                newCard.back = new PloughCardFace()
+                newCard.back.name = dbCard.back.name
+                newCard.back.description = dbCard.back.description
+                this.state.cards.set(dbCard.uid, newCard)
+                const collection = this.state.collections.get(newCard.location)
+                collection.cards.push(newCard)
+            }
+        } else {
+            // Import default stacks
+            for (let stack of getStacks()) {
+                const collection = new PloughCollection();
+                collection.uid = stack.uid
+                collection.name = stack.name
+                collection.expanded = false
+                this.state.collections.set(collection.uid, collection)
+            }
 
-        for (let card of getCards()) {
-            const newCard = new PloughCard()
-            newCard.uid = card.uid
-            newCard.name = `${card.front.name} / ${card.back.name}`
-            newCard.flipped = false
-            newCard.home = card.stack // this is a UID
-            newCard.location = card.stack
-            newCard.front = new PloughCardFace()
-            newCard.front.name = card.front.name
-            newCard.front.description = cardToDescription(card.front)
-            newCard.back = new PloughCardFace()
-            newCard.back.name = card.back.name
-            newCard.back.description = cardToDescription(card.back)
-            this.state.cards.set(card.uid, newCard)
-            const collection = this.state.collections.get(newCard.home)
-            collection.cards.push(newCard)
+            // Create a blank spread
+            const defaultCollection = new PloughCollection();
+            defaultCollection.uid = "default";
+            defaultCollection.name = "Default";
+            defaultCollection.expanded = true;
+            this.state.collections.set("default", defaultCollection);
+
+            // TODO: quantity
+
+            for (let card of getCards()) {
+                const newCard = new PloughCard()
+                newCard.uid = card.uid
+                newCard.name = `${card.front.name} / ${card.back.name}`
+                newCard.flipped = false
+                newCard.home = card.stack // this is a UID
+                newCard.location = card.stack
+                newCard.front = new PloughCardFace()
+                newCard.front.name = card.front.name
+                newCard.front.description = cardToDescription(card.front)
+                newCard.back = new PloughCardFace()
+                newCard.back.name = card.back.name
+                newCard.back.description = cardToDescription(card.back)
+                this.state.cards.set(card.uid, newCard)
+                const collection = this.state.collections.get(newCard.home)
+                collection.cards.push(newCard)
+            }
         }
 
         // BEGIN state management actions
@@ -272,7 +301,13 @@ export class ConstellationCardsRoom extends Room<PloughState> {
 
     // room has been disposed: bring your own logic
     async onDispose() {
-        // TODO: persist game state to MongoDB
+        const gameState: any = this.state.toJSON()
+        // Get rid of card data from collections
+        gameState.collections = map(omit(['cards']), gameState.collections)
+
+        const gameStateString = JSON.stringify(gameState)
+        const result = await query(UPSERT_STATEMENT, [this.metadata.gameId, gameStateString])
+
         console.log("Room disposed")
     }
 }
