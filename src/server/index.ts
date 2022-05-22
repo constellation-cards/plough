@@ -1,3 +1,4 @@
+import { WebSocketTransport } from "@colyseus/ws-transport";
 import { Server } from "colyseus"
 import express, { Request, Response } from "express"
 import { createServer } from "http"
@@ -20,8 +21,11 @@ const serveStatic = (req: Request, res: Response) => {
 app.get('/game', serveStatic)
 app.get('/game/:gameId', serveStatic)
 
+
 const gameServer = new Server({
-    server: createServer(app),
+    transport: new WebSocketTransport({
+        server: createServer(app)
+    })
 })
 
 gameServer.define(ConstellationCardsRoomName, ConstellationCardsRoom)
